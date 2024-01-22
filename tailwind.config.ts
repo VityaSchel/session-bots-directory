@@ -15,6 +15,12 @@ const config = {
       },
     },
     extend: {
+      screens: {
+        'mdlg': '960px',
+        '1200': '1200px',
+        'sm40': '680px',
+        'xl20': '1300px'
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

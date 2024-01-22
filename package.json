@@ -18,6 +18,7 @@
     "@remix-run/react": "^2.5.1",
     "@remix-run/serve": "^2.5.1",
     "class-variance-authority": "^0.7.0",
+    "classnames": "^2.5.1",
     "clsx": "^2.1.0",
     "i18next": "^23.7.18",
     "i18next-browser-languagedetector": "^7.2.0",
