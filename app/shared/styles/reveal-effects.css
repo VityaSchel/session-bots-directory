@@ -1,0 +1,51 @@
+.reveal-1 {
+  opacity: 0;
+  animation: reveal 250ms ease-out 200ms forwards;
+}
+.reveal-2 {
+  opacity: 0;
+  animation: reveal 250ms ease-out 300ms forwards;
+}
+.reveal-3 {
+  opacity: 0;
+  animation: reveal 250ms ease-out 400ms forwards;
+}
+
+.reveal-up-1 {
+  opacity: 0;
+  animation: reveal-up 250ms ease-out 200ms forwards;
+}
+.reveal-up-2 {
+  opacity: 0;
+  animation: reveal-up 250ms ease-out 300ms forwards;
+}
+.reveal-up-3 {
+  opacity: 0;
+  animation: reveal-up 250ms ease-out 400ms forwards;
+}
+.reveal-up-4 {
+  opacity: 0;
+  animation: reveal-up 250ms ease-out 500ms forwards;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

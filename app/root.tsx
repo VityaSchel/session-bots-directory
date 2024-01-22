@@ -11,6 +11,7 @@ import {
   useLoaderData,
 } from '@remix-run/react'
 import { NavBar } from './widgets/navbar'
+import { Footer } from './widgets/footer'
 import { useChangeLanguage } from 'remix-i18next'
 import { useTranslation } from 'react-i18next'
 import i18next from './i18next.server'
@@ -54,6 +55,7 @@ export default function App() {
         <main className='p-4 mt-20'>
           <Outlet />
         </main>
+        <Footer />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

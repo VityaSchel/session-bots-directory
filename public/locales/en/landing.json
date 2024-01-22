@@ -17,5 +17,10 @@
       "title": "Create your bot with no code",
       "descrption": "Contact specialist to build your Session bot with no code"
     }
+  },
+  "cta": {
+    "label": "Add your Session bot in 60 seconds:",
+    "placeholder": "Bot's Session ID",
+    "submit": "Next"
   }
 }

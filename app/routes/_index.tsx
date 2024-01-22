@@ -1,10 +1,14 @@
-import type { MetaFunction } from '@remix-run/node'
+import type { LinksFunction, MetaFunction } from '@remix-run/node'
 import { useTranslation } from 'react-i18next'
 import { OnlineBots } from '@/features/online-bots'
 import { Link } from '@remix-run/react'
 import { LuClock2 } from 'react-icons/lu'
 import { BsStars } from 'react-icons/bs'
 import { RiToolsLine } from 'react-icons/ri'
+import { CTAForm } from '@/features/cta-form'
+import cx from 'classnames'
+import revealEffects from '@/shared/styles/reveal-effects.css'
+import { HiOutlineChevronRight } from 'react-icons/hi2'
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,14 +17,20 @@ export const meta: MetaFunction = () => {
   ]
 }
 
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: revealEffects },
+]
+
 export default function Homepage() {
   const { t } = useTranslation(['common', 'landing'])
 
   return (
-    <div className='flex items-center justify-center gap-[10vw]' style={{ height: 'calc(100vh - 112px)' }}>
-      <div className='flex flex-col gap-2 max-w-[700px]'>
-        <h1 className='text-4xl uppercase font-bold'>{t('title')}</h1>
-        <h2 className='text-xl font-normal'>{t('description')}</h2>
+    <div className='p-4 flex flex-col 870:flex-row items-center justify-center gap-16 870:gap-[5vw] 1060:gap-[10vw] 870:h-[var(--screen)]' style={{ '--screen': 'calc(100vh - 112px)' } as React.CSSProperties}>
+      <div className='flex flex-col gap-6 max-w-[700px]'>
+        <div className='flex flex-col gap-2 reveal-1'>
+          <h1 className='text-3xl xl:text-4xl uppercase font-bold'>{t('title')}</h1>
+          <h2 className='text-md xl:text-xl font-normal'>{t('description')}</h2>
+        </div>
         <OnlineBots />
         <CTAForm />
       </div>
@@ -30,18 +40,21 @@ export default function Homepage() {
           to='/search?sort=new'
           title={t('links.new.title', { ns: 'landing' })}
           description={t('links.new.description', { ns: 'landing' })}
+          className='reveal-up-1'
         />
         <PageLink
           icon={<BsStars />}
           to='/search?sort=popular'
           title={t('links.popular.title', { ns: 'landing' })}
           description={t('links.popular.description', { ns: 'landing' })}
+          className='reveal-up-2'
         />
         <PageLink
           icon={<RiToolsLine />}
           to='https://github.com/VityaSchel/session-nodejs-bot'
           title={t('links.byo.title', { ns: 'landing' })}
           description={t('links.byo.description', { ns: 'landing' })}
+          className='reveal-up-3'
         />
         <PageLink
           ads
@@ -49,32 +62,39 @@ export default function Homepage() {
           to='https://t.me/hlothdev'
           title={t('links.ads.title', { ns: 'landing' })}
           description={t('links.ads.description', { ns: 'landing' })}
+          className='reveal-up-4'
         />
       </div>
     </div>
   )
 }
 
-function PageLink({ to, icon, title, description, ads }: {
+function PageLink({ to, icon, title, description, ads, className }: {
   to: string
   icon: React.ReactNode
   title: string
   description: string
   ads?: boolean
+  className?: string
 }) {
   const { t } = useTranslation()
 
   return (
-    <Link to={to} className='font-[montserrat]'>
-      <div className='flex items-center gap-4 p-4 rounded-md border border-neutral-900 hover:border-neutral-400 transition-colors'>
-        <div className='w-[4rem] shrink-0 h-full flex items-center justify-center text-3xl'>{icon}</div>
-        <div className='flex-col gap-2'>
-          <h3 className='font-medium text-neutral-300 w-full relative'>
-            {title}
-            {ads && <span className='text-[7px] absolute right-0 border px-1 py-0.5 border-neutral-600 text-neutral-600 rounded-sm'>{t('ads')}</span>}
-          </h3>
-          <p className='font-normal !text-neutral-500'>{description}</p>
+    <Link to={to} className='font-[montserrat]' target={to.startsWith('http') ? '_blank' : ''} rel='noreferrer'>
+      <div className={cx('flex items-center gap-4 p-4 rounded-md border border-neutral-900 hover:border-neutral-400 transition-colors [&>.chevron]:text-neutral-400', className)}>
+        <div className='1060:w-[4rem] w-[2rem] shrink-0 h-full flex items-center justify-center text-3xl'>
+          {icon}
         </div>
+        <div className='flex-col gap-2'>
+          <h3 className='font-medium text-neutral-300 w-full flex items-center text-sm xl:text-base'>
+            {title}
+            {ads && <span className='text-[7px] ml-4 border px-1 py-0.5 h-fit border-neutral-600 text-neutral-600 rounded-sm leading-[normal]'>{t('ads')}</span>}
+          </h3>
+          <p className='font-normal !text-neutral-500 text-sm xl:text-base'>{description}</p>
+        </div>
+        <span className='chevron'>
+          <HiOutlineChevronRight />
+        </span>
       </div>
     </Link>
   )

@@ -16,7 +16,9 @@ const config = {
     },
     extend: {
       screens: {
+        '870': '870px',
         'mdlg': '960px',
+        '1060': '1060px',
         '1200': '1200px',
         'sm40': '680px',
         'xl20': '1300px'
