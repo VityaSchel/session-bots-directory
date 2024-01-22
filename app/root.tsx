@@ -51,7 +51,7 @@ export default function App() {
       </head>
       <body className='dark'>
         <NavBar />
-        <main className='p-4'>
+        <main className='p-4 mt-20'>
           <Outlet />
         </main>
         <ScrollRestoration />

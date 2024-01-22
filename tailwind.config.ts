@@ -22,6 +22,7 @@ const config = {
         'xl20': '1300px'
       },
       colors: {
+        brand: '#00f782',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

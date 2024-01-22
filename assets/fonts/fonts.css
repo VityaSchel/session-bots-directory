@@ -1,4 +1,23 @@
 @font-face {
   font-family: 'Session';
-  src: url('./session-font.ttf');
+  font-weight: bold;
+  src: url('./session-font-bold.ttf');
+}
+
+@font-face {
+  font-family: 'Session';
+  font-weight: normal;
+  src: url('./session-font-regular.ttf');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 500;
+  src: local('Montserrat'), url('./montserrat-medium.ttf');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 400;
+  src: local('Montserrat'), url('./montserrat-regular.ttf');
 }

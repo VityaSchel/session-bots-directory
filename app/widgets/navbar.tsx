@@ -12,7 +12,7 @@ export function NavBar() {
   const { t } = useTranslation('navbar')
   
   return (
-    <nav className='w-full h-20 flex items-center p-4 bg-neutral-900 justify-between gap-4'>
+    <nav className='w-full h-20 flex items-center p-4 bg-neutral-900 justify-between gap-4 font-bold z-10 fixed top-0'>
       <div className='flex items-center gap-6 lg:gap-12 xl:gap-20 h-full'>
         <Link to="/" className='block h-full'>
           <img 
@@ -34,11 +34,11 @@ export function NavBar() {
       </div>
       <Search />
       <div className='flex items-center gap-4'>
-        <Button variant={'outline'}>
+        <Button variant={'outline'} className='font-bold'>
           <span className='hidden 1200:block'>{t('auth.login')}</span>
           <span className='block 1200:hidden'>{t(['auth.login_short', 'auth.login'])}</span>
         </Button>
-        <Button>
+        <Button className='font-bold'>
           <span className='hidden 1200:block'>{t('auth.signup')}</span>
           <span className='block 1200:hidden'>{t(['auth.signup_short', 'auth.signup'])}</span>
         </Button>
@@ -74,7 +74,7 @@ function Search() {
 
   return (
     <div 
-      className={cx('hidden sm40:block font-sans transition-all max-w-64', {
+      className={cx('hidden sm40:block font-sans transition-all max-w-64 font-normal', {
         'flex-auto': wide,
         'flex-none': !wide
       })}
