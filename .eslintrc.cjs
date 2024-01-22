@@ -30,7 +30,9 @@ module.exports = {
     'semi': [
       'error',
       'never'
-    ]
+    ],
+    'no-unused-vars': 'warn',
+    '@typescript-eslint/no-unused-vars': 'warn'
   },
   overrides: [
     // React
@@ -56,6 +58,10 @@ module.exports = {
           typescript: {},
         },
       },
+      rules: {
+        'no-unused-vars': 'warn',
+        '@typescript-eslint/no-unused-vars': 'warn'
+      }
     },
 
     // Typescript
@@ -79,6 +85,10 @@ module.exports = {
         'plugin:import/recommended',
         'plugin:import/typescript',
       ],
+      rules: {
+        'no-unused-vars': 'warn',
+        '@typescript-eslint/no-unused-vars': 'warn'
+      }
     },
 
     // Node

@@ -8,5 +8,13 @@
   },
   "editor.quickSuggestions": {
     "strings": "on"
-  }
+  },
+  "i18n-ally.localesPaths": [
+    "public/locales"
+  ],
+  "i18n-ally.namespace": true,
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.enabledParsers": [
+    "json"
+  ]
 }

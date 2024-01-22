@@ -49,7 +49,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className='dark'>
         <NavBar />
         <main className='p-4'>
           <Outlet />

@@ -1,8 +1,10 @@
 {
-  "new": "New",
-  "popular": "Popular",
+  "new": "New bots",
+  "new_short": "New",
+  "popular": "Popular bots",
+  "popular_short": "Popular",
   "search": {
-    "placeholder": "Search"
+    "placeholder": "Search bots..."
   },
   "auth": {
     "login": "Login",

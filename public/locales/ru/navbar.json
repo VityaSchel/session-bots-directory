@@ -1,12 +1,17 @@
 {
-  "new": "Новые",
-  "popular": "Все",
+  "new": "Новые боты",
+  "new_short": "Новые",
+  "popular": "Популярные боты",
+  "popular_short": "Популярные",
   "search": {
-    "placeholder": "Поиск"
+    "placeholder": "Поиск ботов..."
   },
   "auth": {
     "login": "Войти в аккаунт",
+    "login_short": "Войти",
     "logout": "Выйти из аккаунта",
-    "signup": "Зарегистрироваться"
+    "logout_short": "Выйти",
+    "signup": "Зарегистрироваться",
+    "signup_short": "Регистрация"
   }
 }
