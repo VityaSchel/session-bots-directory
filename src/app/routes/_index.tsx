@@ -1,15 +1,15 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from '@remix-run/node'
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
-};
+    { title: 'Session Bots Directory' },
+    { name: 'description', content: 'Session bots directory website is a place to discover new bots created by Session developers community' },
+  ]
+}
 
-export default function Index() {
+export default function Homepage() {
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
+    <div>
       <h1>Welcome to Remix</h1>
       <ul>
         <li>
@@ -37,5 +37,5 @@ export default function Index() {
         </li>
       </ul>
     </div>
-  );
+  )
 }
