@@ -1,4 +1,4 @@
-import { Bot } from '~/model/bot'
+import { Bot } from 'app/model/bot'
 
 export default function BotPage() {
   const bot: Bot = {

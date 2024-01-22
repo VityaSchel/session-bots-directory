@@ -17,7 +17,7 @@ Want to add your own Session bot to sessionbots.directory?
 
 ## About this website
 
-I wanted to try something new, so I've decided to go with Remix this time. Also the goal was to keep this website resource-efficient so I wanted something performant and simple. The website is built with React and LevelDB.
+I wanted to try something new, so I've decided to go with Remix this time. Also the goal was to keep this website resource-efficient so I wanted something performant and simple. The website is built with React, Tailwind+shadcn/ui and LevelDB.
 
 ## Contact
 

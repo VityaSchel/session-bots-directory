@@ -1,5 +1,5 @@
 import { cssBundleHref } from '@remix-run/css-bundle'
-import type { LinksFunction } from '@remix-run/node'
+import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node'
 import {
   Links,
   LiveReload,
@@ -7,10 +7,24 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  json,
+  useLoaderData,
 } from '@remix-run/react'
 import { NavBar } from './widgets/navbar'
+import { useChangeLanguage } from 'remix-i18next'
+import { useTranslation } from 'react-i18next'
+import i18next from './i18next.server'
 
-import fontsCss from 'src/assets/fonts/fonts.css'
+export async function loader({ request }: LoaderFunctionArgs) {
+  const locale = await i18next.getLocale(request)
+  return json({ locale })
+}
+
+export const handle = {
+  i18n: 'common',
+}
+
+import fontsCss from '../assets/fonts/fonts.css'
 import globalCss from './shared/styles/global.css'
 import tailwindCss from './shared/styles/tailwind.css'
 
@@ -22,8 +36,12 @@ export const links: LinksFunction = () => [
 ]
 
 export default function App() {
+  const { locale } = useLoaderData<typeof loader>()
+  const { i18n } = useTranslation()
+  useChangeLanguage(locale)
+  
   return (
-    <html lang="en">
+    <html lang={locale} dir={i18n.dir()}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

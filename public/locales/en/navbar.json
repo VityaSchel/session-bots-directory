@@ -1,0 +1,12 @@
+{
+  "new": "New",
+  "popular": "Popular",
+  "search": {
+    "placeholder": "Search"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign up"
+  }
+}
