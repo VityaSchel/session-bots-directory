@@ -1,0 +1,30 @@
+{
+  "title": "We do not collect any personal data",
+  "description_accounts": "...and in case you really want to know everything we have on users:",
+  "description_bots": "and on bots:",
+  "list": {
+    "account": {
+      "id": "Randomly generated number that identifies account. Used internally.",
+      "username": "Short text that identifies accounts and acts as login and as default display name. Cannot be changed, but you can delete account, create new one with new username and easily transfer all bots.",
+      "displayName": "Optional short text that is displayed on website instead of username. Can be changed at any time.",
+      "createdAt": "Date and time in unix milliseconds format when account was created",
+      "passwordHash": "Password that was specified by user. Value of this field is not stored as plaintext and hashed with argon2 — the strongest hashing function on Earth, which means there is no way for anyone to tell what's the password used or even how many characters in it. Hashing is a one-way function and is commonly used in security systems to prevent storing passwords in plaintext.",
+      "bots": "Array of bot IDs added by this user to the website."
+    },
+    "bot": {
+      "id": "ID of bot that is Session ID of this bot at the same time",
+      "name": "Short text that identifies bot in lists. Can be changed at any time.",
+      "description": "User-specified text that describes bot. Can be changed at any time.",
+      "createdAt": "Date and time in unix milliseconds format when bot was created",
+      "views": "Number of times bot was viewed on website",
+      "author": "ID of account that created this bot",
+      "status": "String that may have one of these values: 'online', 'offline', 'hidden'. Hidden means it won't be displayed publicly on the website",
+      "lastChecked": "Date and time in unix milliseconds format when bot was last checked by our automated system",
+      "checksFails": "Number of times bot failed checks by our automated system. Resets to 0 as soon as at least one check is successfull. If this number goes above 2, the bot is automatically marked as offline. And if it goes above 60, the bot will go into 'hidden' state."
+    }
+  },
+  "subtitle": "What happens if I delete my account?",
+  "description_delete": "All information about you and all bots you added are removed permanently once you hit 'Delete my account'.",
+  "subtitle2": "How can I be sure?",
+  "description_github": "This website is open source and you can check the code on GitHub:"
+}

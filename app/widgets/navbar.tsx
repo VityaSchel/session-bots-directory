@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, NavLink, useNavigate } from '@remix-run/react'
+import { Link, NavLink, useNavigate, useNavigation } from '@remix-run/react'
 import LogoSmall from '../../assets/logo-small.png'
 import { useTranslation } from 'react-i18next'
 import { Input } from '@/shared/shadcn/ui/input'
@@ -60,6 +60,7 @@ function PageLink({ to, children }: React.PropsWithChildren<{
 function Search() {
   const { t } = useTranslation('navbar')
   const navigate = useNavigate()
+  const navigation = useNavigation()
   const [value, setValue] = React.useState('')
   const [focused, setFocused] = React.useState(false)
 
@@ -69,6 +70,16 @@ function Search() {
     if(e.key === 'Enter') {
       navigate(`/search?q=${value}`)
       setValue('')
+      setFocused(false);
+      (document.activeElement as HTMLInputElement | null)?.blur()
+    }
+  }
+
+  const handleFocus = () => {
+    if (window.location?.pathname === '/search') {
+      (document.querySelector('#q') as HTMLInputElement | null)?.focus()
+    } else {
+      return true
     }
   }
 
@@ -85,8 +96,9 @@ function Search() {
         placeholder={t('search.placeholder')} 
         onChange={e => setValue(e.currentTarget.value)}
         onKeyDown={handleKeyDown}
-        onFocus={() => setFocused(true)}
+        onFocus={() => { handleFocus() && setFocused(true) }}
         onBlur={() => setFocused(false)}
+        onClick={handleFocus}
       />
     </div>
   )
