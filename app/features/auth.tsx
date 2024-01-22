@@ -15,13 +15,6 @@ import { Label } from '@/shared/shadcn/ui/label'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 
-const YupSchema = Yup.object({
-  username: Yup.string()
-    .required('Required'),
-  password: Yup.string()
-    .required('Required'),
-})
-
 export function Auth() {
   const { t } = useTranslation('navbar')
   const [loginDialogVisible, setLoginDialogVisible] = React.useState(false)
@@ -74,7 +67,17 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
         </DialogHeader>
         <Formik
           initialValues={{ username: '', password: '' }}
-          validationSchema={YupSchema}
+          validationSchema={
+            Yup.object({
+              username: Yup.string()
+                .matches(/^[a-zA-Z0-9_]+$/, t('form_errors.latin_only'))
+                .max(16, t('form_errors.username_too_long'))
+                .required(t('form_errors.required')),
+              password: Yup.string()
+                .max(128, t('form_errors.password_too_long'))
+                .required(t('form_errors.required')),
+            })
+          }
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
               alert(JSON.stringify(values, null, 2))
@@ -100,8 +103,9 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
                   onBlur={handleBlur}
                   value={values.username}
                   placeholder={t('login.username')}
+                  className={errors.username && touched.username ? 'border-red-600' : ''}
+                  title={errors.username && touched.username ? errors.username : ''}
                 />
-                {errors.username && touched.username && <span className='text-red-600 text-sm font-bold'>{errors.username}</span>}
                 <Input
                   type="password"
                   name="password"
@@ -109,8 +113,9 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
                   onBlur={handleBlur}
                   value={values.password}
                   placeholder={t('login.password')}
+                  className={errors.password && touched.password ? 'border-red-600' : ''}
+                  title={errors.password && touched.password ? errors.password : ''}
                 />
-                {errors.password && touched.password && <span className='text-red-600 text-sm font-bold'>{errors.password}</span>}
               </div>
               <DialogDescription className='font-[montserrat]'>
                 Забыли пароль? <Button variant='link' className='inline-block p-0 h-fit' type='button' onClick={handleSwitchToSignup}>Создайте новый аккаунт</Button> и перенесите ботов туда.
@@ -143,7 +148,19 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
         </DialogHeader>
         <Formik
           initialValues={{ username: '', password: '', displayName: '' }}
-          validationSchema={YupSchema}
+          validationSchema={
+            Yup.object({
+              username: Yup.string()
+                .matches(/^[a-zA-Z0-9_]+$/, t('form_errors.latin_only'))
+                .max(16, t('form_errors.username_too_long'))
+                .required(t('form_errors.required')),
+              displayName: Yup.string()
+                .max(36, t('form_errors.displayName_too_long')),
+              password: Yup.string()
+                .max(128, t('form_errors.password_too_long'))
+                .required(t('form_errors.required')),
+            })
+          }
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
               alert(JSON.stringify(values, null, 2))
@@ -162,39 +179,36 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
           }) => (
             <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
               <div className='flex flex-col gap-2'>
-                <div className='flex flex-col gap-1'>
-                  <Input
-                    type='text'
-                    name='username'
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.username}
-                    placeholder={t('signup.username')}
-                  />
-                  {errors.username && touched.username && <span className='text-red-600 text-sm font-[montserrat] font-bold ml-4 mb-1'>{errors.username}</span>}
-                </div>
-                <div className='flex flex-col gap-1'>
-                  <Input
-                    type="text"
-                    name='displayName'
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.displayName}
-                    placeholder={t('signup.displayName')}
-                  />
-                  {errors.displayName && touched.displayName && <span className='text-red-600 text-sm font-[montserrat] font-bold ml-4 mb-1'>{errors.displayName}</span>}
-                </div>
-                <div className='flex flex-col gap-1'>
-                  <Input
-                    type="password"
-                    name="password"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.password}
-                    placeholder={t('signup.password')}
-                  />
-                  {errors.password && touched.password && <span className='text-red-600 text-sm font-[montserrat] font-bold ml-4 mb-1'>{errors.password}</span>}
-                </div>
+                <Input
+                  type='text'
+                  name='username'
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.username}
+                  placeholder={t('signup.username')}
+                  className={errors.username && touched.username ? 'border-red-600' : ''}
+                  title={errors.username && touched.username ? errors.username : ''}
+                />
+                <Input
+                  type="text"
+                  name='displayName'
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.displayName}
+                  placeholder={t('signup.displayName')}
+                  className={errors.displayName && touched.displayName ? 'border-red-600' : ''}
+                  title={errors.displayName && touched.displayName ? errors.displayName : ''}
+                />
+                <Input
+                  type="password"
+                  name="password"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.password}
+                  placeholder={t('signup.password')}
+                  className={errors.password && touched.password ? 'border-red-600' : ''}
+                  title={errors.password && touched.password ? errors.password : ''}
+                />
               </div>
               <DialogDescription className='font-[montserrat]'>
                 Уже есть аккаунт? <Button variant='link' className='inline-block p-0 h-fit' type='button' onClick={handleSwitchToLogin}>Войдите в него</Button>

@@ -1,5 +1,5 @@
 import { BotCard, BotCardSkeleton } from '@/entities/bot-card'
-import { Bot } from '@/model/bot'
+import { Bot } from '@/shared/model/bot'
 import { searchBots } from '@/server/bots'
 import { Input } from '@/shared/shadcn/ui/input'
 import { SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/shared/shadcn/ui/select'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Bot } from '@/model/bot'
+import { Bot } from '@/shared/model/bot'
 import { Button } from '@/shared/shadcn/ui/button'
 import {
   Card,

@@ -1,4 +1,12 @@
-import { Bot } from '@/model/bot'
+import { Bot } from '@/shared/model/bot'
+import { Level } from 'level'
+
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url)) + '/'
+
+const bots = new Level(__dirname + '/../../db/bots', { valueEncoding: 'json' })
 
 export async function searchBots({ query, sort }: {
   query: string | null

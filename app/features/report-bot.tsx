@@ -1,6 +1,6 @@
 import React from 'react'
 import { CaptchaDialog } from '@/features/captcha-dialog'
-import { Bot } from '@/model/bot'
+import { Bot } from '@/shared/model/bot'
 import {
   AlertDialog,
   AlertDialogAction,
