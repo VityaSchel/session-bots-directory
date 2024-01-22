@@ -15,6 +15,7 @@ import { Label } from '@/shared/shadcn/ui/label'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import Cookies from 'js-cookie'
+import { useNavigate, useSearchParams } from '@remix-run/react'
 
 export function Auth() {
   const { t } = useTranslation('navbar')
@@ -22,14 +23,24 @@ export function Auth() {
   const [signupDialogVisible, setSignupDialogVisible] = React.useState(false)
   const [logoutDialogVisible, setLogoutDialogVisible] = React.useState(false)
   const [isAuthorized, setIsAuthorized] = React.useState<false | string>(false)
+  const [params] = useSearchParams()
+  const navigate = useNavigate()
 
-  const getIsAuthorized = () => {
+  const getIsAuthorized = (initial = false) => {
     const isAuthorized = Cookies.get('sessionbots.directory_authorized')
-    console.log(isAuthorized)
     setIsAuthorized(isAuthorized ?? false)
+    if (!initial && isAuthorized && params.has('signup_botid')) {
+      navigate(`/manage/add/${params.get('signup_botid')}`)
+    }
   }
 
-  React.useEffect(() => getIsAuthorized(), [])
+  React.useEffect(() => getIsAuthorized(true), [])
+
+  React.useEffect(() => {
+    if (params.has('signup_botid')) {
+      setSignupDialogVisible(true)
+    }
+  }, [params])
 
   return (
     <div className='flex items-center gap-4'>
@@ -162,6 +173,7 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
                   placeholder={t('login.username')}
                   className={errors.username && touched.username ? 'border-red-600' : ''}
                   title={errors.username && touched.username ? errors.username : ''}
+                  maxLength={16}
                 />
                 <Input
                   type="password"
@@ -172,6 +184,7 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
                   placeholder={t('login.password')}
                   className={errors.password && touched.password ? 'border-red-600' : ''}
                   title={errors.password && touched.password ? errors.password : ''}
+                  maxLength={128}
                 />
               </div>
               <DialogDescription className='font-[montserrat]'>
@@ -276,6 +289,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
                   placeholder={t('signup.username')}
                   className={errors.username && touched.username ? 'border-red-600' : ''}
                   title={errors.username && touched.username ? errors.username : ''}
+                  maxLength={16}
                 />
                 <Input
                   type="text"
@@ -286,6 +300,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
                   placeholder={t('signup.displayName')}
                   className={errors.displayName && touched.displayName ? 'border-red-600' : ''}
                   title={errors.displayName && touched.displayName ? errors.displayName : ''}
+                  maxLength={36}
                 />
                 <Input
                   type="password"
@@ -296,6 +311,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
                   placeholder={t('signup.password')}
                   className={errors.password && touched.password ? 'border-red-600' : ''}
                   title={errors.password && touched.password ? errors.password : ''}
+                  maxLength={128}
                 />
               </div>
               <DialogDescription className='font-[montserrat]'>

@@ -3,6 +3,7 @@ import { Input } from '@/shared/shadcn/ui/input'
 import { useNavigate } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/shadcn/ui/button'
+import Cookies from 'js-cookie'
 
 export function CTAForm() {
   const { t } = useTranslation('landing')
@@ -16,8 +17,12 @@ export function CTAForm() {
   }
 
   const handleNext = () => {
-    navigate(`/signup?botid=${value}`)
-    setValue('')
+    const isAuthorized = Cookies.get('sessionbots.directory_authorized')
+    if (isAuthorized) {
+      navigate(`/manage/add/${value}`)
+    } else {
+      navigate(`/?signup_botid=${value}`)
+    }
   }
 
   return (
