@@ -9,5 +9,12 @@
   "not_found": "No results found",
   "no_description": "No description",
   "author": "Author",
-  "createdAt": "Created at"
+  "createdAt": "Created at",
+  "report": {
+    "title": ["Report", "bot"],
+    "description": "If you think this bot is breaking the rules, please report it. If you need urgent help, please contact me in Telegram using link in the footer of the website.",
+    "cancel": "Cancel",
+    "submit": "Send report"
+  },
+  "reported": "Content flagged and reported"
 }

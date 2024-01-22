@@ -1,3 +1,6 @@
+import React from 'react'
+import { CaptchaDialog } from '@/features/captcha-dialog'
+import { Bot } from '@/model/bot'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,24 +13,45 @@ import {
   AlertDialogTrigger,
 } from '@/shared/shadcn/ui/alert-dialog'
 import { Button } from '@/shared/shadcn/ui/button'
+import { useTranslation } from 'react-i18next'
+import { RiFlag2Fill } from 'react-icons/ri'
 
-export function AlertDialogDemo() {
+export function ReportBot({ bot, onReported }: {
+  bot: Bot
+  onReported: () => void
+}) {
+  const { t } = useTranslation('search')
+  const [captchaVisible, setCaptchaVisible] = React.useState(false)
+  const [visible, setVisible] = React.useState(false)
+
+  const handleReport = (captcha: string) => {
+    setCaptchaVisible(false)
+    setVisible(false)
+    onReported()
+  }
+
   return (
-    <AlertDialog>
+    <AlertDialog open={visible}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline">Show Dialog</Button>
+        <Button variant={'destructive'} size='icon' onClick={() => setVisible(true)}>
+          <RiFlag2Fill />
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+          <AlertDialogTitle>{t('report.title.0')} <span className='bg-muted py-1 px-2 rounded-sm'>{bot.name}</span> {t('report.title.1')}</AlertDialogTitle>
+          <AlertDialogDescription className='font-[montserrat]'>
+            {t('report.description')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogCancel>{t('report.cancel')}</AlertDialogCancel>
+          <Button onClick={() => setCaptchaVisible(true)}>{t('report.submit')}</Button>
+          <CaptchaDialog 
+            visible={captchaVisible} 
+            onCancel={() => setCaptchaVisible(false)}
+            onSolve={handleReport}
+          />
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -22,7 +22,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export const handle = {
-  i18n: 'common',
+  i18n: 'common'
 }
 
 import fontsCss from '../assets/fonts/fonts.css'

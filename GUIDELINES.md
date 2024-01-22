@@ -24,6 +24,11 @@ This means that your bot must respond to all people who send message to it, with
 
 This means that your bot must be online anytime and it will be tested randomly by our automated uptime checker. This doesn't mean your bot must technically have 100% uptime, because we won't test it heavily each minute, but if your bot is constantly lacks responses to automatic checks, it first goes to "offline" category and if it never starts responding, it will eventually be hidden from the website.
 
+Max username length: 16 characters
+Max display name length: 36 characters
+Max bot name lenghth: 28 characters
+Max bot description length: 200 characters
+
 ## Important notice
 
 Please note, that we may remove any content (accounts, bots) from this website without notice if asked by authorities, copyright holders and pretty much everyone else. Though, as it was previously stated, we do not collect any personal information about users and thus won't be able to assist in any investigations involving Session bots.

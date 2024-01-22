@@ -12,8 +12,8 @@ import {
 import { MdOutlineContentCopy, MdOutlineDone } from 'react-icons/md'
 import copy from 'copy-to-clipboard'
 import { useTranslation } from 'react-i18next'
-import { RiFlag2Fill } from 'react-icons/ri'
 import { useLocale } from 'remix-i18next'
+import { ReportBot } from '@/features/report-bot'
 
 export const handle = { i18n: 'search' }
 
@@ -23,10 +23,21 @@ export function BotCard({ bot }: {
   const { t } = useTranslation('search')
   const [copied, setCopied] = React.useState(false)
   const locale = useLocale()
+  const [reported, setReported] = React.useState(false)
 
   const handleCopy = () => {
     copy(bot.id)
     setCopied(true)
+  }
+
+  if (reported) {
+    return (
+      <Card className="w-full flex justify-center items-center h-[346px]">
+        <span className='text-sm text-muted-foreground font-[montserrat]'>
+          {t('reported')}
+        </span>
+      </Card>
+    )
   }
 
   return (
@@ -37,18 +48,15 @@ export function BotCard({ bot }: {
         <CardDescription className='font-[montserrat] flex-1 break-words'>
           {bot.description || <span className='text-neutral-700'>{t('no_description')}</span>}
         </CardDescription>
-        <CardDescription className='font-[montserrat]'>
-          {t('createdAt')} <b>{Intl.DateTimeFormat(locale, {
-            'day': '2-digit',
-            'month': '2-digit',
-            'year': 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-          }).format(bot.createdAt)}</b>
-        </CardDescription>
       </CardHeader>
-      <CardContent>
-        
+      <CardContent className='text-sm text-muted-foreground font-[montserrat]'>
+        {t('createdAt')} <b>{Intl.DateTimeFormat(locale, {
+          'day': '2-digit',
+          'month': '2-digit',
+          'year': 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }).format(bot.createdAt)}</b>
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant='outline' onMouseDown={handleCopy} onMouseOut={() => setCopied(false)}>
@@ -59,9 +67,10 @@ export function BotCard({ bot }: {
           </span>
           {bot.id.slice(0, 4) + '...' + bot.id.slice(-4)}
         </Button>
-        <Button variant={'destructive'} size='icon'>
-          <RiFlag2Fill />
-        </Button>
+        <ReportBot 
+          bot={bot} 
+          onReported={() => setReported(true)} 
+        />
       </CardFooter>
     </Card>
   )
