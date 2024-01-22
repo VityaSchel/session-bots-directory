@@ -14,6 +14,7 @@ import copy from 'copy-to-clipboard'
 import { useTranslation } from 'react-i18next'
 import { useLocale } from 'remix-i18next'
 import { ReportBot } from '@/features/report-bot'
+import { Skeleton } from '@/shared/shadcn/ui/skeleton'
 
 export const handle = { i18n: 'search' }
 
@@ -73,5 +74,11 @@ export function BotCard({ bot }: {
         />
       </CardFooter>
     </Card>
+  )
+}
+
+export function BotCardSkeleton() {
+  return (
+    <Skeleton className="w-full h-[346px] rounded-xl" />
   )
 }

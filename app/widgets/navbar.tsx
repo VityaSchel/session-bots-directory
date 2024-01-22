@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Input } from '@/shared/shadcn/ui/input'
 import { Button } from '@/shared/shadcn/ui/button'
 import cx from 'classnames'
+import { Auth } from '@/features/auth'
 
 export const handle = { i18n: 'navbar' }
 
@@ -33,16 +34,7 @@ export function NavBar() {
         </div>
       </div>
       <Search />
-      <div className='flex items-center gap-4'>
-        <Button variant={'outline'} className='font-bold'>
-          <span className='hidden 1200:block'>{t('auth.login')}</span>
-          <span className='block 1200:hidden'>{t(['auth.login_short', 'auth.login'])}</span>
-        </Button>
-        <Button className='font-bold'>
-          <span className='hidden 1200:block'>{t('auth.signup')}</span>
-          <span className='block 1200:hidden'>{t(['auth.signup_short', 'auth.signup'])}</span>
-        </Button>
-      </div>
+      <Auth />
     </nav>
   )
 }

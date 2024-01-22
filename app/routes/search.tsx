@@ -1,7 +1,6 @@
-import { BotCard } from '@/entities/bot-card'
+import { BotCard, BotCardSkeleton } from '@/entities/bot-card'
 import { Bot } from '@/model/bot'
 import { searchBots } from '@/server/bots'
-import { Card } from '@/shared/shadcn/ui/card'
 import { Input } from '@/shared/shadcn/ui/input'
 import { SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/shared/shadcn/ui/select'
 import { Select } from '@radix-ui/react-select'
@@ -101,7 +100,12 @@ export default function SearchPage() {
           </div>
         </Form>
       </div>
-      <Results loading={navigation.state === 'loading'} bots={bots} />
+      <div style={{ minHeight: 'calc(100vh - 400px)' }}>
+        <Results 
+          loading={navigation.state === 'loading'}
+          bots={bots} 
+        />
+      </div>
     </div>
   )
 }
@@ -124,9 +128,18 @@ function Results({ loading, bots }: {
 
   return (
     <div className='w-full grid grid-cols-4 p-12 gap-4'>
-      {bots.map(bot => (
-        <BotCard bot={bot} key={bot.id} />
-      ))}
+      {loading ? (
+        <>
+          <BotCardSkeleton />
+          <BotCardSkeleton />
+          <BotCardSkeleton />
+          <BotCardSkeleton />
+        </>
+      ) : (
+        bots.map(bot => (
+          <BotCard bot={bot} key={bot.id} />
+        ))
+      )}
     </div>
   )
 }
