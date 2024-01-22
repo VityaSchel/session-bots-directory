@@ -14,38 +14,69 @@ import { Input } from '@/shared/shadcn/ui/input'
 import { Label } from '@/shared/shadcn/ui/label'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
+import Cookies from 'js-cookie'
 
 export function Auth() {
   const { t } = useTranslation('navbar')
   const [loginDialogVisible, setLoginDialogVisible] = React.useState(false)
   const [signupDialogVisible, setSignupDialogVisible] = React.useState(false)
+  const [logoutDialogVisible, setLogoutDialogVisible] = React.useState(false)
+  const [isAuthorized, setIsAuthorized] = React.useState<false | string>(false)
+
+  const getIsAuthorized = () => {
+    const isAuthorized = Cookies.get('sessionbots.directory_authorized')
+    console.log(isAuthorized)
+    setIsAuthorized(isAuthorized ?? false)
+  }
+
+  React.useEffect(() => getIsAuthorized(), [])
 
   return (
     <div className='flex items-center gap-4'>
-      <Button variant={'outline'} className='font-bold' onClick={() => setLoginDialogVisible(true)}>
-        <span className='hidden 1200:block'>{t('auth.login')}</span>
-        <span className='block 1200:hidden'>{t(['auth.login_short', 'auth.login'])}</span>
-      </Button>
-      <LoginDialog 
-        visible={loginDialogVisible} 
-        switchToSignup={() => {
-          setSignupDialogVisible(true)
-          setLoginDialogVisible(false)
-        }}
-        onClose={() => setLoginDialogVisible(false)}
-      />
-      <Button className='font-bold' onClick={() => setSignupDialogVisible(true)}>
-        <span className='hidden 1200:block'>{t('auth.signup')}</span>
-        <span className='block 1200:hidden'>{t(['auth.signup_short', 'auth.signup'])}</span>
-      </Button>
-      <SignupDialog 
-        visible={signupDialogVisible} 
-        switchToLogin={() => {
-          setLoginDialogVisible(true)
-          setSignupDialogVisible(false)
-        }}
-        onClose={() => setSignupDialogVisible(false)}
-      />
+      {isAuthorized ? (<>
+        <Button variant={'outline'} className='font-bold' onClick={() => setLogoutDialogVisible(true)}>
+          <span className='hidden 1200:block'>{t('auth.logout')}</span>
+          <span className='block 1200:hidden'>{t(['auth.logout_short', 'auth.logout'])}</span>
+        </Button>
+        <LogoutDialog
+          visible={logoutDialogVisible}
+          onClose={() => {
+            setLogoutDialogVisible(false)
+            getIsAuthorized()
+          }}
+        />
+      </>) : (<>
+        <Button variant={'outline'} className='font-bold' onClick={() => setLoginDialogVisible(true)}>
+          <span className='hidden 1200:block'>{t('auth.login')}</span>
+          <span className='block 1200:hidden'>{t(['auth.login_short', 'auth.login'])}</span>
+        </Button>
+        <LoginDialog 
+          visible={loginDialogVisible} 
+          switchToSignup={() => {
+            setSignupDialogVisible(true)
+            setLoginDialogVisible(false)
+          }}
+          onClose={() => {
+            setLoginDialogVisible(false)
+            getIsAuthorized()
+          }}
+        />
+        <Button className='font-bold' onClick={() => setSignupDialogVisible(true)}>
+          <span className='hidden 1200:block'>{t('auth.signup')}</span>
+          <span className='block 1200:hidden'>{t(['auth.signup_short', 'auth.signup'])}</span>
+        </Button>
+        <SignupDialog 
+          visible={signupDialogVisible} 
+          switchToLogin={() => {
+            setLoginDialogVisible(true)
+            setSignupDialogVisible(false)
+          }}
+          onClose={() => {
+            setSignupDialogVisible(false)
+            getIsAuthorized()
+          }}
+        />
+      </>)}
     </div>
   )
 }
@@ -55,9 +86,16 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
   switchToSignup: () => void
   onClose: () => void
 }) {
+  const [error, setError] = React.useState('')
   const { t } = useTranslation('auth')
 
   const handleSwitchToSignup = switchToSignup
+
+  React.useEffect(() => {
+    if(visible) {
+      setError('')
+    }
+  }, [visible])
 
   return (
     <Dialog open={visible} onOpenChange={visible => !visible && onClose()}>
@@ -78,11 +116,30 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
                 .required(t('form_errors.required')),
             })
           }
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2))
-              setSubmitting(false)
-            }, 400)
+          onSubmit={async (values) => {
+            const request = await fetch('/api/auth/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(values)
+            })
+            if (request.status === 200) {
+              const response = await request.json() as { ok: false, error: 'ACCOUNT_NOT_FOUND' | 'INVALID_PASSWORD' } | { ok: true }
+              if(!response.ok) {
+                if(response.error === 'ACCOUNT_NOT_FOUND') {
+                  setError(t('form_errors.account_not_found'))
+                } else if(response.error === 'INVALID_PASSWORD') {
+                  setError(t('form_errors.invalid_password'))
+                } else {
+                  setError(t('form_errors.unknown_error'))
+                }
+              } else {
+                onClose()
+              }
+            } else {
+              setError(t('form_errors.unknown_error'))
+            }
           }}
         >
           {({
@@ -121,7 +178,10 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
                 Забыли пароль? <Button variant='link' className='inline-block p-0 h-fit' type='button' onClick={handleSwitchToSignup}>Создайте новый аккаунт</Button> и перенесите ботов туда.
               </DialogDescription>
               <DialogFooter>
-                <Button type="submit">{t('login.submit')}</Button>
+                <div className='w-full flex items-center justify-between'>
+                  <span className='text-red-600 font-bold text-xs'>{error}</span>
+                  <Button type="submit" disabled={isSubmitting}>{t('login.submit')}</Button>
+                </div>
               </DialogFooter>
             </form>
           )}
@@ -136,9 +196,16 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
   switchToLogin: () => void
   onClose: () => void
 }) {
+  const [error, setError] = React.useState('')
   const { t } = useTranslation('auth')
 
   const handleSwitchToLogin = switchToLogin
+
+  React.useEffect(() => {
+    if(visible) {
+      setError('')
+    }
+  }, [visible])
 
   return (
     <Dialog open={visible} onOpenChange={visible => !visible && onClose()}>
@@ -161,11 +228,32 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
                 .required(t('form_errors.required')),
             })
           }
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2))
-              setSubmitting(false)
-            }, 400)
+          onSubmit={async (values) => {
+            const request = await fetch('/api/auth/signup', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                username: values.username,
+                password: values.password,
+                ...(values.displayName ? { displayName: values.displayName } : {})
+              })
+            })
+            if(request.status === 200) {
+              const response = await request.json() as { ok: false, error: 'USERNAME_CONFLICT' | 'INVALID_PASSWORD' } | { ok: true }
+              if (!response.ok) {
+                if (response.error === 'USERNAME_CONFLICT') {
+                  setError(t('form_errors.username_conflict'))
+                } else {
+                  setError(t('form_errors.unknown_error'))
+                }
+              } else {
+                onClose()
+              }
+            } else {
+              setError(t('form_errors.unknown_error'))
+            }
           }}
         >
           {({
@@ -214,11 +302,60 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
                 Уже есть аккаунт? <Button variant='link' className='inline-block p-0 h-fit' type='button' onClick={handleSwitchToLogin}>Войдите в него</Button>
               </DialogDescription>
               <DialogFooter>
-                <Button type="submit">{t('signup.submit')}</Button>
+                <div className='w-full flex items-center justify-between'>
+                  <span className='text-red-600 font-bold text-sm'>{error}</span>
+                  <Button type="submit" disabled={isSubmitting}>{t('signup.submit')}</Button>
+                </div>
               </DialogFooter>
             </form>
           )}
         </Formik>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function LogoutDialog({ visible, onClose }: {
+  visible: boolean
+  onClose: () => void
+}) {
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [error, setError] = React.useState('')
+  const { t } = useTranslation('auth')
+
+  const handleLogout = async () => {
+    setIsLoading(true)
+    try {
+      const request = await fetch('/api/auth/logout', {
+        method: 'POST'
+      })
+      if(request.status === 200) {
+        onClose()
+      } else {
+        console.error(request)
+        setError(t('form_errors.unknown_error'))
+      }
+    } catch(e) {
+      console.error(e)
+      setError(t('form_errors.unknown_error'))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={visible} onOpenChange={visible => !visible && !isLoading && onClose()}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>{t('logout.title')}</DialogTitle>
+        </DialogHeader>
+        <DialogDescription className='font-[montserrat]'>{t('logout.text')}</DialogDescription>
+        <DialogFooter>
+          <div className='w-full flex items-center justify-between'>
+            <span className='text-red-600 font-bold text-sm'>{error}</span>
+            <Button disabled={isLoading} onClick={handleLogout} className='font-bold'>{t('logout.submit')}</Button>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

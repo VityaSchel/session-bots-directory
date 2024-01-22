@@ -6,8 +6,8 @@ import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url)) + '/'
 
-const accounts = new Level(__dirname + '/../../db/accounts', { valueEncoding: 'json' })
-const sessions = new Level(__dirname + '/../../db/sessions', { valueEncoding: 'json' })
+const accounts = new Level(__dirname + '../db/accounts', { valueEncoding: 'json' })
+const sessions = new Level(__dirname + '../db/sessions', { valueEncoding: 'json' })
 
 export async function getAccount(username: string): Promise<AccountSchema | null> {
   try {
@@ -68,3 +68,24 @@ export async function addSession(username: string, token: string) {
 export async function deleteSession(token: string) {
   await sessions.del(token)
 }
+
+export async function resolveSession(token: string) {
+  try {
+    const username = await sessions.get(token)
+    return username
+  } catch (error) {
+    if(error instanceof Error) {
+      if('code' in error) {
+        if (error.code === 'LEVEL_NOT_FOUND') {
+          return null
+        }
+      }
+    }
+    throw error
+  }
+}
+
+process.on('sigint', async () => {
+  await sessions.close()
+  await accounts.close()
+})

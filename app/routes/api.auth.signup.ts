@@ -51,10 +51,10 @@ export async function action({ request }: LoaderFunctionArgs) {
   const sessionToken = nanoid()
   await addSession(body.username, sessionToken)
   const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-  request.headers.set('Set-Cookie', [
-    cookie.serialize('sessionbots.directory_token', sessionToken, { httpOnly: true, expires }),
-    cookie.serialize('sessionbots.directory_token', sessionToken, { httpOnly: false, expires }),
-  ].join(';'))
 
-  return json({ ok: true })
+  const headers = new Headers()
+  headers.append('Set-Cookie', cookie.serialize('sessionbots.directory_token', sessionToken, { httpOnly: true, expires, path: '/' }))
+  headers.append('Set-Cookie', cookie.serialize('sessionbots.directory_authorized', body.displayName ?? body.username, { httpOnly: false, expires, path: '/' }))
+
+  return json({ ok: true }, { headers })
 }

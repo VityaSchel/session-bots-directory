@@ -1,7 +1,9 @@
-import { getAccount } from '@/server/auth'
+import { addSession, getAccount } from '@/server/auth'
 import { compare } from '@/server/hash'
 import { LoaderFunctionArgs, json } from '@remix-run/node'
 import * as Yup from 'yup'
+import cookie from 'cookie'
+import { nanoid } from 'nanoid'
 
 export async function loader({
   params,
@@ -34,4 +36,14 @@ export async function action({ request }: LoaderFunctionArgs) {
   if (!await compare(account.passwordHash, body.password)) {
     return json({ ok: false, error: 'INVALID_PASSWORD' })
   }
+
+  const sessionToken = nanoid()
+  await addSession(body.username, sessionToken)
+  const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+
+  const headers = new Headers()
+  headers.append('Set-Cookie', cookie.serialize('sessionbots.directory_token', sessionToken, { httpOnly: true, expires, path: '/' }))
+  headers.append('Set-Cookie', cookie.serialize('sessionbots.directory_authorized', account.displayName ?? account.username, { httpOnly: false, expires, path: '/' }))
+
+  return json({ ok: true }, { headers })
 }

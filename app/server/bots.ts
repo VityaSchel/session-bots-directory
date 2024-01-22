@@ -6,7 +6,8 @@ import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url)) + '/'
 
-const bots = new Level(__dirname + '/../../db/bots', { valueEncoding: 'json' })
+const bots = new Level(__dirname + '../db/bots', { valueEncoding: 'json' })
+await bots.open()
 
 export async function searchBots({ query, sort }: {
   query: string | null
