@@ -172,7 +172,7 @@ function BotCard({ bot }: {
   }
 
   return (
-    <Card className="w-full max-w-full flex flex-col h-[346px]">
+    <Card className="w-full max-w-full flex flex-col h-[380px]">
       <CardHeader>
         <CardTitle>{bot.name}</CardTitle>
         <CardDescription className='[overflow-wrap:anywhere]'>SessionID: <b>{bot.id}</b></CardDescription>
