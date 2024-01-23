@@ -90,15 +90,21 @@ export default function ManageBotsPage() {
           </Link>
           <Outlet />
           <span className='border border-dashed border-brand w-full my-8'></span>
-          <Button className='870:ml-8 justify-start font-bold' variant='outline'>
-            <MdEdit className='mr-2' /> {t('buttons.change_displayname')}
-          </Button>
-          <Button className='870:ml-8 justify-start font-bold' variant='outline'>
-            <MdEdit className='mr-2' /> {t('buttons.change_password')}
-          </Button>
-          <Button className='870:ml-8 justify-start font-bold' variant='destructive'>
-            <MdDelete className='mr-2' /> {t('buttons.delete_account')}
-          </Button>
+          <Link to='/manage/display-name' className='870:ml-8'>
+            <Button className='w-full justify-start font-bold' variant='outline'>
+              <MdEdit className='mr-2' /> {t('buttons.change_displayname')}
+            </Button>
+          </Link>
+          <Link to='/manage/password' className='870:ml-8'>
+            <Button className='w-full justify-start font-bold' variant='outline'>
+              <MdEdit className='mr-2' /> {t('buttons.change_password')}
+            </Button>
+          </Link>
+          <Link to='/manage/delete-account' className='870:ml-8'>
+            <Button className='w-full justify-start font-bold' variant='destructive'>
+              <MdDelete className='mr-2' /> {t('buttons.delete_account')}
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
@@ -114,7 +120,7 @@ function BotCard({ bot }: {
     <Card className="w-full max-w-full flex flex-col h-[346px]">
       <CardHeader>
         <CardTitle>{bot.name}</CardTitle>
-        <CardDescription className='break-words [overflow-wrap:anywhere]'>SessionID: <b>{bot.id}</b></CardDescription>
+        <CardDescription className='[overflow-wrap:anywhere]'>SessionID: <b>{bot.id}</b></CardDescription>
       </CardHeader>
       <CardContent className='font-[montserrat] text-muted-foreground flex-1 [overflow-wrap:anywhere]'>
         {bot.description || <Button variant='ghost' className='font-bold'>{t('bots.add_description')}</Button>}

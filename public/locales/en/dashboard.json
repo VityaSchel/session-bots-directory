@@ -47,6 +47,29 @@
   "not_authorized": "You are not authorized to view this page",
   "no_bots": "У вас нет ботов",
   "form_errors": {
-    "unknown_error": "Unknown error"
+    "unknown_error": "Unknown error",
+    "displayName_too_long": "Display name is too long"
+  },
+  "settings": {
+    "display_name": {
+      "title": "Display name",
+      "description": "This name will be displayed in the bot catalog instead of your username. Leave empty to disable display name and use your username instead",
+      "placeholder": "Display name (optional)",
+      "submit": "Save",
+      "cancel": "Cancel"
+    },
+    "password": {
+      "title": "Change password",
+      "description": "Leave empty to keep current password",
+      "placeholder": "New password",
+      "submit": "Save",
+      "cancel": "Cancel"
+    },
+    "delete_account": {
+      "title": "Delete account",
+      "description": "This will delete your account and all bots associated with it. This action is irreversible once you click 'Go ahead' button below.",
+      "submit": "Go ahead",
+      "cancel": "Cancel"
+    }
   }
 }

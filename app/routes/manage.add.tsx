@@ -141,7 +141,7 @@ export default function AddNewBotStartPage() {
                       setError(response.error)
                     } else {
                       setStage('verification')
-                      navigate('/manage')
+                      onClose()
                     }
                   } else {
                     setError(t('form_errors.unknown_error'))
