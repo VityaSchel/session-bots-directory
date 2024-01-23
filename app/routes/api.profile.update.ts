@@ -45,15 +45,16 @@ export async function action({ request }: LoaderFunctionArgs) {
     const accounts = await getDb('accounts')
 
     if(body.newDisplayName !== undefined) {
-      if(body.newDisplayName === '') {
+      const newDisplayName = body.newDisplayName.trim()
+      if(newDisplayName === '') {
         const { displayName: _, ...accountWithNoDisplayName } = account
         await accounts.put(username, JSON.stringify(accountWithNoDisplayName))
       } else {
-        const isDisplayNameSafe =await isSafe(body.newDisplayName)
+        const isDisplayNameSafe =await isSafe(newDisplayName)
         if (!isDisplayNameSafe) {
           return json({ ok: false, error: 'DISPLAY_NAME_NOT_SAFE' })
         }
-        await accounts.put(username, JSON.stringify({ ...account, displayName: body.newDisplayName }))
+        await accounts.put(username, JSON.stringify({ ...account, displayName: newDisplayName }))
       }
     }
 

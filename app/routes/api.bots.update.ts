@@ -57,11 +57,15 @@ export async function action({ request }: LoaderFunctionArgs) {
     }
 
     if(body.description !== undefined) {
-      await updateBot(body.botId, 'description', body.description || undefined)
+      const description = body.description.trim()
+      if (description !== '')
+        await updateBot(body.botId, 'description', description || undefined)
     }
 
     if (body.name !== undefined) {
-      await updateBot(body.botId, 'name', body.name)
+      const name = body.name.trim()
+      if (name !== '')
+        await updateBot(body.botId, 'name', name)
     }
 
     if (body.visibility !== undefined) {

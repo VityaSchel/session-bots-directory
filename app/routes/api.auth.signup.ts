@@ -51,8 +51,9 @@ export async function action({ request }: LoaderFunctionArgs) {
   if (!usernameIsSafe) {
     return json({ ok: false, error: 'USERNAME_NOT_SAFE' })
   }
-  if (body.displayName) {
-    const displayNameIsSafe = await isSafe(body.displayName)
+  const displayName = body.displayName?.trim()
+  if (displayName) {
+    const displayNameIsSafe = await isSafe(displayName)
     if (!displayNameIsSafe) {
       return json({ ok: false, error: 'DISPLAY_NAME_NOT_SAFE' })
     }
@@ -62,7 +63,7 @@ export async function action({ request }: LoaderFunctionArgs) {
   await addAccount({
     id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
     username: body.username,
-    ...(body.displayName && { displayName: body.displayName }),
+    ...(displayName && { displayName }),
     createdAt: Date.now(),
     passwordHash,
     bots: [],
