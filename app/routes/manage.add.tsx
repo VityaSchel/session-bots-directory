@@ -140,7 +140,7 @@ export default function AddNewBotStartPage() {
                     if (!response.ok) {
                       setError(response.error)
                     } else {
-                      setStage('verification')
+                      navigate('/manage')
                       onClose()
                     }
                   } else {
@@ -239,6 +239,7 @@ export default function AddNewBotStartPage() {
                     <Button
                       type='submit'
                       disabled={Object.values(errors).filter(Boolean).length > 0 || isSubmitting}
+                      className='font-bold'
                     >
                       {t('add.step1.submit')}
                     </Button>

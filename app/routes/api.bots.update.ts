@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import cookie from 'cookie'
 import { nanoid } from 'nanoid'
 import { hash } from '@/server/hash'
-import { addBot, deleteBots, getBot, getBots } from '@/server/bots'
+import { addBot, deleteBots, getBot, getBots, updateBot } from '@/server/bots'
 import { getDb } from '@/db'
 import { startVerification, verifyBot } from '@/server/verification'
 import { isSafe } from '@/server/moderation'
@@ -17,15 +17,21 @@ export async function loader({
 }
 
 export async function action({ request }: LoaderFunctionArgs) {
-  if(request.method === 'POST') {
-    const body = await request.json() as { newPassword?: string, newDisplayName?: string }
+  if (request.method === 'POST') {
+    const body = await request.json() as { botId: string, visibility?: 'public' | 'hidden', description?: string, name?: string }
     try {
       await Yup.object({
-        newPassword: Yup.string()
+        botId: Yup.string()
+          .length(66)
+          .required(),
+        visibility: Yup.string()
+          .oneOf(['public', 'hidden']),
+        description: Yup.string()
           .min(1)
-          .max(128),
-        newDisplayName: Yup.string()
-          .max(36),
+          .max(200),
+        name: Yup.string()
+          .min(1)
+          .max(28),
       }).validate(body)
     } catch (error) {
       return json({ ok: false }, { status: 400 })
@@ -42,28 +48,40 @@ export async function action({ request }: LoaderFunctionArgs) {
       return json({ ok: false }, { status: 401 })
     }
 
-    const accounts = await getDb('accounts')
-
-    if(body.newDisplayName !== undefined) {
-      if(body.newDisplayName === '') {
-        const { displayName: _, ...accountWithNoDisplayName } = account
-        await accounts.put(username, JSON.stringify(accountWithNoDisplayName))
-      } else {
-        const isDisplayNameSafe =await isSafe(body.newDisplayName)
-        if (!isDisplayNameSafe) {
-          return json({ ok: false, error: 'DISPLAY_NAME_NOT_SAFE' })
-        }
-        await accounts.put(username, JSON.stringify({ ...account, displayName: body.newDisplayName }))
-      }
+    const bot = await getBot(body.botId)
+    if (!bot) {
+      return json({ ok: false }, { status: 404 })
     }
 
-    if(body.newPassword) {
-      const hashedPassword = await hash(body.newPassword)
-      await accounts.put(username, JSON.stringify({ ...account, passwordHash: hashedPassword }))
+    if (bot.author !== username) {
+      return json({ ok: false }, { status: 403 })
+    }
+
+    if(body.description !== undefined) {
+      await updateBot(body.botId, 'description', body.description)
+    }
+
+    if (body.name !== undefined) {
+      await updateBot(body.botId, 'name', body.name)
+    }
+
+    if (body.visibility !== undefined) {
+      await updateBot(body.botId, 'visible', body.visibility === 'public')
     }
 
     return json({ ok: true })
-  } else if(request.method === 'DELETE') {
+  } else if (request.method === 'DELETE') {
+    const body = await request.json() as { botId: string }
+    try {
+      await Yup.object({
+        botId: Yup.string()
+          .length(66)
+          .required(),
+      }).validate(body)
+    } catch (error) {
+      return json({ ok: false }, { status: 400 })
+    }
+
     const cookies = cookie.parse(request.headers.get('Cookie') || '')
     const sessionToken = cookies['sessionbots.directory_token']
     const username = sessionToken && await resolveSession(sessionToken)
@@ -74,15 +92,19 @@ export async function action({ request }: LoaderFunctionArgs) {
     if (!account) {
       return json({ ok: false }, { status: 401 })
     }
-    
-    await deleteAccount(account.username)
-    await deleteBots(account.bots)
 
-    const headers = new Headers()
-    headers.append('Set-Cookie', cookie.serialize('sessionbots.directory_token', '', { httpOnly: true, expires: new Date(0), path: '/' }))
-    headers.append('Set-Cookie', cookie.serialize('sessionbots.directory_authorized', '', { httpOnly: true, expires: new Date(0), path: '/' }))
+    const bot = await getBot(body.botId)
+    if (!bot) {
+      return json({ ok: false }, { status: 404 })
+    }
 
-    return json({ ok: true }, { headers })
+    if(bot.author !== username) {
+      return json({ ok: false }, { status: 403 })
+    }
+
+    await deleteBots([body.botId])
+
+    return json({ ok: true })
   } else {
     return json({ ok: false }, { status: 405 })
   }

@@ -15,7 +15,7 @@ import { Label } from '@/shared/shadcn/ui/label'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import Cookies from 'js-cookie'
-import { Link, useNavigate, useSearchParams } from '@remix-run/react'
+import { Link, useNavigate, useRevalidator, useSearchParams } from '@remix-run/react'
 
 export function Auth() {
   const { t } = useTranslation('navbar')
@@ -106,6 +106,7 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
   const [error, setError] = React.useState('')
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
+  const revalidator = useRevalidator()
 
   const handleSwitchToSignup = switchToSignup
 
@@ -155,6 +156,7 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
               } else {
                 if(window.location.pathname.startsWith('/manage')) {
                   navigate('/manage', { replace: true })
+                  revalidator.revalidate()
                 }
                 onClose()
               }
@@ -222,6 +224,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
   const [error, setError] = React.useState('')
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
+  const revalidator = useRevalidator()
 
   const handleSwitchToLogin = switchToLogin
 
@@ -279,6 +282,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
               } else {
                 if (window.location.pathname.startsWith('/manage')) {
                   navigate('/manage')
+                  revalidator.revalidate()
                 }
                 onClose()
               }
@@ -338,7 +342,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
               <DialogFooter>
                 <div className='w-full flex flex-col gap-4 510:gap-0 510:flex-row items-center justify-between'>
                   <span className='text-red-600 font-bold text-sm'>{error}</span>
-                  <Button type="submit" disabled={isSubmitting}>{t('signup.submit')}</Button>
+                  <Button type="submit" className='font-bold' disabled={isSubmitting}>{t('signup.submit')}</Button>
                 </div>
               </DialogFooter>
             </form>

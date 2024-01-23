@@ -15,6 +15,7 @@ import { Footer } from './widgets/footer'
 import { useChangeLanguage } from 'remix-i18next'
 import { useTranslation } from 'react-i18next'
 import i18next from './i18next.server'
+import { Toaster } from 'sonner'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const locale = await i18next.getLocale(request)
@@ -28,12 +29,14 @@ export const handle = {
 import fontsCss from '../assets/fonts/fonts.css'
 import globalCss from './shared/styles/global.css'
 import tailwindCss from './shared/styles/tailwind.css'
+import sonnerCss from './shared/styles/sonner.css'
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
   { rel: 'stylesheet', href: fontsCss },
   { rel: 'stylesheet', href: globalCss },
   { rel: 'stylesheet', href: tailwindCss },
+  { rel: 'stylesheet', href: sonnerCss },
 ]
 
 export default function App() {
@@ -53,6 +56,7 @@ export default function App() {
       <body className='dark'>
         <NavBar />
         <main className='p-4 mt-20'>
+          <Toaster richColors visibleToasts={1} />
           <Outlet />
         </main>
         <Footer />

@@ -15,23 +15,27 @@ export async function searchBots({ query, sort }: {
   query: string | null
   sort: string | null
 }): Promise<Bot[]> {
+  let results = bots
+    .filter(b => b.visible)
   if(query) {
-    bots = bots.filter(b => b.name.toLowerCase().includes(query.toLowerCase()) || b.description?.toLowerCase().includes(query.toLowerCase()))
+    results = results.filter(b => b.name.toLowerCase().includes(query.toLowerCase()) || b.description?.toLowerCase().includes(query.toLowerCase()))
   }
   if(sort) {
     if(sort === 'oldest') {
-      bots = bots.sort((a, b) => a.createdAt - b.createdAt)
+      results = results.sort((a, b) => a.createdAt - b.createdAt)
     } else {
-      bots = bots.sort((a, b) => b.createdAt - a.createdAt)
+      results = results.sort((a, b) => b.createdAt - a.createdAt)
     }
   }
-  return bots
+  return results
 }
 
 export async function getBots(botIds: string[]): Promise<Bot[]> {
   const botsDb = await getDb('bots')
   const bots = await botsDb.getMany(botIds)
-  return bots.map(bot => JSON.parse(bot) as Bot)
+  return bots
+    .filter(Boolean)
+    .map(bot => JSON.parse(bot) as Bot)
 }
 
 export async function getBot(botId: string): Promise<Bot | null> {
@@ -65,4 +69,19 @@ export async function addBot(bot: Bot) {
   await botsDb.put(bot.id, JSON.stringify(bot))
   bots.push(bot)
   pushNewBot(bot.author, bot.id)
+}
+
+export async function deleteBots(botsIds: string[]) {
+  const botsDb = await getDb('bots')
+  await botsDb.batch(botsIds.map(id => ({ type: 'del', key: id })))
+  bots = bots.filter(b => !botsIds.includes(b.id))
+}
+
+export async function updateBot<E extends keyof Bot>(botId: string, property: E, newValue: Bot[E]) {
+  const bot = await getBot(botId)
+  if (!bot) return
+  bot[property] = newValue
+  await botsDb.put(botId, JSON.stringify(bot))
+  const index = bots.findIndex(b => b.id === botId)
+  bots[index] = bot
 }

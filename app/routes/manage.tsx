@@ -18,7 +18,8 @@ import {
 } from '@/shared/shadcn/ui/card'
 import { Bot } from '@/shared/model/bot'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/shared/shadcn/ui/select'
-import { Link, Outlet, useLoaderData } from '@remix-run/react'
+import { Link, Outlet, useLoaderData, useNavigate, useRevalidator } from '@remix-run/react'
+import { toast } from 'sonner'
 
 export const handle = { i18n: 'dashboard' }
 
@@ -118,6 +119,28 @@ function BotCard({ bot }: {
   bot: Bot
 }) {
   const { t } = useTranslation('dashboard')
+  const navigate = useNavigate()
+  const revalidator = useRevalidator()
+
+  const handleDeleteBot = async () => {
+    const request = await fetch('/api/bots/update', {
+      method: 'DELETE',
+      body: JSON.stringify({
+        botId: bot.id
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const response = await request.json() as { ok: true } | { ok: false, error: string }
+    if(response.ok) {
+      toast.success(t('bots.delete_success'))
+      navigate('/manage', { replace: true })
+      revalidator.revalidate()
+    } else {
+      toast.error(t('bots.delete_error'))
+    }
+  }
 
   return (
     <Card className="w-full max-w-full flex flex-col h-[346px]">
@@ -131,8 +154,25 @@ function BotCard({ bot }: {
       <CardFooter className="flex justify-between">
         <Select
           value={String(bot.visible)}
-          onValueChange={visibility => {
-            visibility as 'true' | 'false'
+          onValueChange={async visibility => {
+            const request = await fetch('/api/bots/update', {
+              method: 'POST',
+              body: JSON.stringify({
+                botId: bot.id,
+                visibility: (visibility as 'true' | 'false') === 'true' ? 'public' : 'hidden'
+              }),
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            const response = await request.json() as { ok: true } | { ok: false, error: string }
+            if(!response.ok) {
+              toast.error(t('bots.update_error'))
+            } else {
+              toast.success(t('bots.update_success'))
+              navigate('/manage', { replace: true })
+              revalidator.revalidate()
+            }
           }}
         >
           <SelectTrigger className="w-[200px]">
@@ -150,7 +190,7 @@ function BotCard({ bot }: {
             {/* {t('bots.edit')} */}
             <MdEdit size={20} />
           </Button>
-          <Button className='font-bold' variant={'destructive'} size='icon'>
+          <Button className='font-bold' variant={'destructive'} size='icon' onClick={handleDeleteBot}>
             {/* {t('bots.delete')} */}
             <MdDelete size={20} />
           </Button>

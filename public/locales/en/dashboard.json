@@ -13,7 +13,11 @@
     "visibility": {
       "public": "Опубликован",
       "hidden": "Скрыт"
-    }
+    },
+    "update_error": "Error while updating bot",
+    "update_success": "Updated successfully",
+    "delete_success": "Bot deleted successfully",
+    "delete_error": "Error while deleting bot"
   },
   "add": {
     "title": "Add bot",
