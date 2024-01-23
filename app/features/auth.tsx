@@ -105,6 +105,7 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
 }) {
   const [error, setError] = React.useState('')
   const { t } = useTranslation('auth')
+  const navigate = useNavigate()
 
   const handleSwitchToSignup = switchToSignup
 
@@ -152,6 +153,9 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
                   setError(t('form_errors.unknown_error'))
                 }
               } else {
+                if(window.location.pathname.startsWith('/manage')) {
+                  navigate('/manage', { replace: true })
+                }
                 onClose()
               }
             } else {
@@ -217,6 +221,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
 }) {
   const [error, setError] = React.useState('')
   const { t } = useTranslation('auth')
+  const navigate = useNavigate()
 
   const handleSwitchToLogin = switchToLogin
 
@@ -260,14 +265,21 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
               })
             })
             if(request.status === 200) {
-              const response = await request.json() as { ok: false, error: 'USERNAME_CONFLICT' | 'INVALID_PASSWORD' } | { ok: true }
+              const response = await request.json() as { ok: false, error: 'USERNAME_CONFLICT' | 'USERNAME_NOT_SAFE' | 'DISPLAY_NAME_NOT_SAFE' } | { ok: true }
               if (!response.ok) {
                 if (response.error === 'USERNAME_CONFLICT') {
                   setError(t('form_errors.username_conflict'))
+                } else if (response.error === 'USERNAME_NOT_SAFE') {
+                  setError(t('form_errors.username_not_safe'))
+                } else if (response.error === 'DISPLAY_NAME_NOT_SAFE') {
+                  setError(t('form_errors.display_name_not_safe'))
                 } else {
                   setError(t('form_errors.unknown_error'))
                 }
               } else {
+                if (window.location.pathname.startsWith('/manage')) {
+                  navigate('/manage')
+                }
                 onClose()
               }
             } else {
@@ -344,6 +356,7 @@ function LogoutDialog({ visible, onClose }: {
   const [isLoading, setIsLoading] = React.useState(false)
   const [error, setError] = React.useState('')
   const { t } = useTranslation('auth')
+  const navigate = useNavigate()
 
   const handleLogout = async () => {
     setIsLoading(true)
@@ -352,6 +365,9 @@ function LogoutDialog({ visible, onClose }: {
         method: 'POST'
       })
       if(request.status === 200) {
+        if (window.location.pathname.startsWith('/manage')) {
+          navigate('/manage', { replace: true })
+        }
         onClose()
       } else {
         console.error(request)

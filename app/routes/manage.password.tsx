@@ -67,11 +67,11 @@ export default function ChangePasswordPage() {
             </DialogDescription>
           </DialogHeader>
           <Formik
-            initialValues={{ displayName: '' }}
+            initialValues={{ password: '' }}
             validationSchema={
               Yup.object({
-                displayName: Yup.string()
-                  .max(36, t('form_errors.displayName_too_long')),
+                password: Yup.string()
+                  .max(128, t('form_errors.password_too_long')),
               })
             }
             validateOnChange
@@ -79,13 +79,13 @@ export default function ChangePasswordPage() {
             onSubmit={async (values) => {
               setError('')
               try {
-                const request = await fetch('/api/account/display-name', {
+                const request = await fetch('/api/profile/update', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                    newDisplayName: values.displayName
+                    newPassword: values.password
                   })
                 })
                 if (request.status === 200) {
@@ -114,7 +114,15 @@ export default function ChangePasswordPage() {
             }) => (
             <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
               <div className='flex flex-col gap-2 items-center'>
-                <Input name='displayName' value={values.displayName} onChange={handleChange} placeholder={t('settings.password.placeholder')} />
+                <Input
+                  name='password'
+                  type='password'
+                  autoComplete='off'
+                  value={values.password}
+                  onChange={handleChange}
+                  placeholder={t('settings.password.placeholder')} 
+                  maxLength={128}
+                />
                 <span className='text-red-600 font-bold text-sm mt-2'>{error}</span>
                 <Button className='mt-4 font-bold' disabled={isSubmitting}>{t('settings.password.submit')}</Button>
               </div>

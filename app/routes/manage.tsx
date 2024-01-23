@@ -34,6 +34,9 @@ export const loader = async ({
 }: LoaderFunctionArgs) => {
   const cookies = Cookie.parse(request.headers.get('Cookie') || '')
   const sessionToken = cookies['sessionbots.directory_token']
+  if (!sessionToken) {
+    return json({ ok: false, error: 'NOT_AUTHORIZED' })
+  }
   const username = await resolveSession(sessionToken)
   if (!username) {
     return json({ ok: false, error: 'NOT_AUTHORIZED' })

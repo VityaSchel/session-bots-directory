@@ -4,6 +4,7 @@ import { getDb } from '@/db'
 export async function getAccount(username: string): Promise<AccountSchema | null> {
   try {
     const accounts = await getDb('accounts')
+    if (!username) return null
     const account = await accounts.get(username)
     return JSON.parse(account) as AccountSchema
   } catch (error) {
@@ -73,6 +74,7 @@ export async function deleteSession(token: string) {
 export async function resolveSession(token: string) {
   try {
     const sessions = await getDb('sessions')
+    if (!token) return null
     const username = await sessions.get(token)
     return username
   } catch (error) {

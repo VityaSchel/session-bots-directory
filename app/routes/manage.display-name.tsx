@@ -12,13 +12,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/shared/shadcn/ui/dialog'
-import { Outlet, useNavigate, useNavigation, useSearchParams } from '@remix-run/react'
+import { Outlet, useLoaderData, useNavigate, useNavigation, useSearchParams } from '@remix-run/react'
 import { Input } from '@/shared/shadcn/ui/input'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { Textarea } from '@/shared/shadcn/ui/textarea'
 import { Checkbox } from '@/shared/shadcn/ui/checkbox'
 import cx from 'classnames'
+import { getAccount, resolveSession } from '@/server/auth'
+import Cookie from 'cookie'
 
 export const handle = { i18n: 'dashboard' }
 
@@ -32,23 +34,25 @@ export const meta: MetaFunction = () => {
 export const loader = async ({
   request,
 }: LoaderFunctionArgs) => {
-  // const cookies = Cookie.parse(request.headers.get('Cookie') || '')
-  // const sessionToken = cookies['sessionbots.directory_token']
-  // const username = await resolveSession(sessionToken)
-  // if (!username) {
-  //   return json({ ok: false, error: 'NOT_AUTHORIZED' })
-  // }
+  const cookies = Cookie.parse(request.headers.get('Cookie') || '')
+  const sessionToken = cookies['sessionbots.directory_token']
+  if (!sessionToken) {
+    return json({ displayName: '' })
+  }
+  const username = await resolveSession(sessionToken)
+  if (!username) {
+    return json({ displayName: '' })
+  }
 
-  // const account = await getAccount(username)
-  // if (!account) return json({ ok: false, error: 'NO_ACCOUNT' })
-  // const botsIds = account?.bots
-  // const bots = await getBots(botsIds)
+  const account = await getAccount(username)
+  if (!account) return json({ displayName: '' })
 
-  return json({ bots: [] })
+  return json({ displayName: account.displayName ?? '' })
 }
 
 export default function ChangeDisplayNamePage() {
   const { t } = useTranslation('dashboard')
+  const { displayName } = useLoaderData<typeof loader>()
   const navigate = useNavigate()
   const [error, setError] = React.useState<string>('')
 
@@ -67,7 +71,7 @@ export default function ChangeDisplayNamePage() {
             </DialogDescription>
           </DialogHeader>
           <Formik
-            initialValues={{ displayName: '' }}
+            initialValues={{ displayName }}
             validationSchema={
               Yup.object({
                 displayName: Yup.string()
@@ -79,7 +83,7 @@ export default function ChangeDisplayNamePage() {
             onSubmit={async (values) => {
               setError('')
               try {
-                const request = await fetch('/api/account/display-name', {
+                const request = await fetch('/api/profile/update', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json'
@@ -91,7 +95,11 @@ export default function ChangeDisplayNamePage() {
                 if (request.status === 200) {
                   const response = await request.json() as { ok: false, error: string } | { ok: true }
                   if (!response.ok) {
-                    setError(response.error)
+                    if (response.error === 'DISPLAY_NAME_NOT_SAFE') {
+                      setError(t('form_errors.display_name_not_safe'))
+                    } else {
+                      setError(response.error)
+                    }
                   } else {
                     onClose()
                   }
@@ -114,7 +122,13 @@ export default function ChangeDisplayNamePage() {
             }) => (
             <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
               <div className='flex flex-col gap-2 items-center'>
-                <Input name='displayName' value={values.displayName} onChange={handleChange} placeholder={t('settings.display_name.placeholder')} />
+                <Input
+                  name='displayName'
+                  value={values.displayName}
+                  onChange={handleChange}
+                  placeholder={t('settings.display_name.placeholder')} 
+                  maxLength={36}
+                />
                 <span className='text-red-600 font-bold text-sm mt-2'>{error}</span>
                 <Button className='mt-4 font-bold' disabled={isSubmitting}>{t('settings.display_name.submit')}</Button>
               </div>

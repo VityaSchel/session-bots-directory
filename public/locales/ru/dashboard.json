@@ -48,7 +48,9 @@
   "no_bots": "У вас нет ботов",
   "form_errors": {
     "unknown_error": "Неизвестная ошибка",
-    "displayName_too_long": "Отображаемое имя слишком длинное"
+    "displayName_too_long": "Отображаемое имя слишком длинное",
+    "password_too_long": "Пароль слишком длинный",
+    "display_name_not_safe": "Выберите другое отображаемое имя"
   },
   "settings": {
     "display_name": {

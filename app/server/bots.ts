@@ -37,6 +37,7 @@ export async function getBots(botIds: string[]): Promise<Bot[]> {
 export async function getBot(botId: string): Promise<Bot | null> {
   const botsDb = await getDb('bots')
   try {
+    if (!botId) return null
     const existingBot = await botsDb.get(botId)
     return JSON.parse(existingBot) as Bot
   } catch (error) {

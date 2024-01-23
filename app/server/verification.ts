@@ -18,6 +18,7 @@ export async function verifyBot(botSessionId: string, userId: number) {
   const verifications = await getDb('verifications')
   let verificationDb: string
   try {
+    if (!botSessionId) return null
     verificationDb = await verifications.get(botSessionId)
   } catch (error) {
     if (error instanceof Error) {

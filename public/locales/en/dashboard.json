@@ -2,7 +2,7 @@
   "title": "Dashboard",
   "buttons": {
     "add": "Add new bot",
-    "change_displayname": "Add/change display name",
+    "change_displayname": "Add/change displayed name",
     "change_password": "Change password",
     "delete_account": "Delete account"
   },
@@ -48,13 +48,15 @@
   "no_bots": "У вас нет ботов",
   "form_errors": {
     "unknown_error": "Unknown error",
-    "displayName_too_long": "Display name is too long"
+    "displayName_too_long": "Displayed name is too long",
+    "password_too_long": "Password is too long",
+    "display_name_not_safe": "Choose another displayed name"
   },
   "settings": {
     "display_name": {
-      "title": "Display name",
+      "title": "Displayed name",
       "description": "This name will be displayed in the bot catalog instead of your username. Leave empty to disable display name and use your username instead",
-      "placeholder": "Display name (optional)",
+      "placeholder": "Displayed name (optional)",
       "submit": "Save",
       "cancel": "Cancel"
     },

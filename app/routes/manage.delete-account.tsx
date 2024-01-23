@@ -51,9 +51,38 @@ export default function DeleteAccountPage() {
   const { t } = useTranslation('dashboard')
   const navigate = useNavigate()
   const [error, setError] = React.useState<string>('')
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
 
   const onClose = () => {
     navigate('/manage')
+  }
+
+  const onSubmit = async () => {
+    setError('')
+    setIsSubmitting(true)
+    try {
+      const request = await fetch('/api/profile/update', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      if (request.status === 200) {
+        const response = await request.json() as { ok: false, error: string } | { ok: true }
+        if (!response.ok) {
+          setError(response.error)
+        } else {
+          onClose()
+        }
+      } else {
+        setError(t('form_errors.unknown_error'))
+      }
+    } catch (e) {
+      console.error(e)
+      setError(t('form_errors.unknown_error'))
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -66,63 +95,15 @@ export default function DeleteAccountPage() {
               {t('settings.delete_account.description')}
             </DialogDescription>
           </DialogHeader>
-          <Formik
-            initialValues={{ displayName: '' }}
-            validationSchema={
-              Yup.object({
-                displayName: Yup.string()
-                  .max(36, t('form_errors.displayName_too_long')),
-              })
-            }
-            validateOnChange
-            validateOnMount
-            onSubmit={async (values) => {
-              setError('')
-              try {
-                const request = await fetch('/api/account/display-name', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    newDisplayName: values.displayName
-                  })
-                })
-                if (request.status === 200) {
-                  const response = await request.json() as { ok: false, error: string } | { ok: true }
-                  if (!response.ok) {
-                    setError(response.error)
-                  } else {
-                    onClose()
-                  }
-                } else {
-                  setError(t('form_errors.unknown_error'))
-                }
-              } catch(e) {
-                console.error(e)
-                setError(t('form_errors.unknown_error'))
-              }
-            }}
-          >
-            {({
-              values,
-              errors,
-              handleChange,
-              handleSubmit,
-              setFieldValue,
-              isSubmitting
-            }) => (
-            <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-              <div className='flex flex-col gap-2 items-center'>
-                <span className='text-red-600 font-bold text-sm mt-2'>{error}</span>
-                <DialogFooter className='mt-4 w-full !justify-between'>
-                  <Button className='font-bold' variant={'secondary'} disabled={isSubmitting} type='button' onClick={onClose}>{t('settings.delete_account.cancel')}</Button>
-                  <Button className='font-bold' variant={'default'} disabled={isSubmitting}>{t('settings.delete_account.submit')}</Button>
-                </DialogFooter>
-              </div>
-            </form>
-            )}
-          </Formik>
+          <form onSubmit={onSubmit} className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-2 items-center'>
+              <span className='text-red-600 font-bold text-sm mt-2'>{error}</span>
+              <DialogFooter className='mt-4 w-full !justify-between'>
+                <Button className='font-bold' variant={'secondary'} disabled={isSubmitting} type='button' onClick={onClose}>{t('settings.delete_account.cancel')}</Button>
+                <Button className='font-bold' variant={'default'} disabled={isSubmitting}>{t('settings.delete_account.submit')}</Button>
+              </DialogFooter>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
       <Outlet />

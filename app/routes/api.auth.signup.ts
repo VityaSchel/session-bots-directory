@@ -4,6 +4,7 @@ import * as Yup from 'yup'
 import cookie from 'cookie'
 import { nanoid } from 'nanoid'
 import { hash } from '@/server/hash'
+import { isSafe } from '@/server/moderation'
 
 export async function loader({
   params,
@@ -37,12 +38,23 @@ export async function action({ request }: LoaderFunctionArgs) {
   if (account) {
     return json({ ok: false, error: 'USERNAME_CONFLICT' })
   }
+
+  const usernameIsSafe = await isSafe(body.username)
+  if (!usernameIsSafe) {
+    return json({ ok: false, error: 'USERNAME_NOT_SAFE' })
+  }
+  if (body.displayName) {
+    const displayNameIsSafe = await isSafe(body.displayName)
+    if (!displayNameIsSafe) {
+      return json({ ok: false, error: 'DISPLAY_NAME_NOT_SAFE' })
+    }
+  }
   
   const passwordHash = await hash(body.password)
   await addAccount({
     id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
     username: body.username,
-    displayName: body.displayName,
+    ...(body.displayName && { displayName: body.displayName }),
     createdAt: Date.now(),
     passwordHash,
     bots: [],
