@@ -19,7 +19,7 @@ export function CTAForm() {
   const handleNext = () => {
     const isAuthorized = Cookies.get('sessionbots.directory_authorized')
     if (isAuthorized) {
-      navigate(`/manage/add/${value}`)
+      navigate(`/manage/add?sessionid=${value}`)
     } else {
       navigate(`/?signup_botid=${value}`)
     }

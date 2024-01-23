@@ -30,7 +30,7 @@ export function Auth() {
     const isAuthorized = Cookies.get('sessionbots.directory_authorized')
     setIsAuthorized(isAuthorized ?? false)
     if (!initial && isAuthorized && params.has('signup_botid')) {
-      navigate(`/manage/add/${params.get('signup_botid')}`)
+      navigate(`/manage/add?sessionid=${params.get('signup_botid')}`)
     }
   }
 

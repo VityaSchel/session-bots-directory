@@ -18,6 +18,7 @@ import {
 } from '@/shared/shadcn/ui/card'
 import { Bot } from '@/shared/model/bot'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/shared/shadcn/ui/select'
+import { Link, Outlet } from '@remix-run/react'
 
 export const handle = { i18n: 'dashboard' }
 
@@ -71,9 +72,12 @@ export default function ManageBotsPage() {
         </div>
         <span className='border border-dashed border-brand my-8 870:my-0 870:ml-8'></span>
         <div className='flex-1 flex flex-col gap-2 870:py-8'>
-          <Button className='870:ml-8 justify-start font-bold' variant='secondary'>
-            <BsPlusCircle className='mr-2' /> {t('buttons.add')}
-          </Button>
+          <Link to='/manage/add' className='870:ml-8'>
+            <Button className='w-full justify-start font-bold' variant='secondary'>
+              <BsPlusCircle className='mr-2' /> {t('buttons.add')}
+            </Button>
+          </Link>
+          <Outlet />
           <span className='border border-dashed border-brand w-full my-8'></span>
           <Button className='870:ml-8 justify-start font-bold' variant='outline'>
             <MdEdit className='mr-2' /> {t('buttons.change_displayname')}
