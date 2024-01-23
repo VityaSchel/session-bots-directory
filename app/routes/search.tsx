@@ -38,6 +38,7 @@ export default function SearchPage() {
   const submit = useSubmit()
   const navigation = useNavigation()
   const formRef = React.useRef<HTMLFormElement>(null)
+  const [isFirstSearch, setIsFirstSearch] = React.useState(true)
 
   React.useEffect(() => {
     const searchField = document.getElementById('q')
@@ -60,7 +61,7 @@ export default function SearchPage() {
           role="search"
           className='flex flex-col gap-2 1060:gap-4 max-w-full'
           onChange={(event) => {
-            const isFirstSearch = q === null
+            setIsFirstSearch(false)
             submit(event.currentTarget, {
               replace: !isFirstSearch
             })
