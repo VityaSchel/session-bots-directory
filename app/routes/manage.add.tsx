@@ -165,20 +165,6 @@ export default function AddNewBotStartPage() {
               setFieldValue,
               isSubmitting
             }) => {
-              const submitDisabled = Object.values(errors).filter(Boolean).length > 0 || isSubmitting
-
-              const onSubmitBtn = () => {
-                if(submitDisabled) return
-                setCaptchaVisible(true)
-              }
-
-              const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-                if(e.key === 'Enter') {
-                  e.preventDefault()
-                  onSubmitBtn()
-                }
-              }
-
               return (
                 <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
                   {stage === 'initial' ? (<>
@@ -193,7 +179,6 @@ export default function AddNewBotStartPage() {
                         className={errors.sessionID && (values.sessionID !== '') ? 'border-red-600' : ''}
                         title={errors.sessionID && (values.sessionID !== '') ? errors.sessionID : ''}
                         disabled={isSubmitting}
-                        onKeyDown={handleKeyDown}
                       />
                       <Input 
                         name='name'
@@ -203,7 +188,6 @@ export default function AddNewBotStartPage() {
                         onChange={handleChange}
                         maxLength={28}
                         disabled={isSubmitting}
-                        onKeyDown={handleKeyDown}
                       />
                       <Textarea 
                         name='description'
@@ -256,22 +240,12 @@ export default function AddNewBotStartPage() {
                       <div className='w-full flex items-center justify-between'>
                         <span className='text-red-600 font-bold text-xs'>{error}</span>
                         <Button
-                          onClick={onSubmitBtn}
-                          disabled={submitDisabled}
+                          type='submit'
+                          disabled={Object.values(errors).filter(Boolean).length > 0 || isSubmitting}
                           className='font-bold'
                         >
                           {t('add.step1.submit')}
                         </Button>
-                        <CaptchaDialog
-                          visible={captchaVisible}
-                          onCancel={() => setCaptchaVisible(false)}
-                          onSolve={async captcha => {
-                            setCaptchaVisible(false)
-                            setFieldValue('captcha', captcha)
-                            await new Promise(resolve => setTimeout(resolve, 10))
-                            handleSubmit()
-                          }}
-                        />
                       </div>
                     </DialogFooter>
                   </>) : (<>
@@ -282,7 +256,22 @@ export default function AddNewBotStartPage() {
                       <div className='font-mono [overflow-wrap:anywhere] p-3 rounded-md bg-neutral-800'>{verificationData.output}</div>
                       <DialogDescription>{t('add.step2.text3')}</DialogDescription>
                       <span className='text-red-600 font-bold text-sm mt-2'>{error}</span>
-                      <Button className='mt-4 font-bold' disabled={isSubmitting}>{t('add.step2.submit')}</Button>
+                      <Button 
+                        type='button'
+                        className='mt-4 font-bold' 
+                        disabled={isSubmitting}
+                        onClick={() => setCaptchaVisible(true)}
+                      >{t('add.step2.submit')}</Button>
+                      <CaptchaDialog
+                        visible={captchaVisible}
+                        onCancel={() => setCaptchaVisible(false)}
+                        onSolve={async captcha => {
+                          setCaptchaVisible(false)
+                          setFieldValue('captcha', captcha)
+                          await new Promise(resolve => setTimeout(resolve, 10))
+                          handleSubmit()
+                        }}
+                      />
                     </div>
                   </>)}
                 </form>

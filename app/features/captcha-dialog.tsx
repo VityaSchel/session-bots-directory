@@ -14,7 +14,7 @@ import HCaptcha from '@hcaptcha/react-hcaptcha'
 
 export function CaptchaDialog({ visible, onSolve, onCancel }: {
   visible: boolean,
-  onSolve: (captcha: string) => void
+  onSolve: (token: string) => void
   onCancel: () => void
 }) {
   return (
@@ -22,7 +22,7 @@ export function CaptchaDialog({ visible, onSolve, onCancel }: {
       <DialogContent className="sm:max-w-[425px]">
         <HCaptcha
           sitekey="c393c3af-1017-43a3-9988-c9a91c1913b4"
-          onVerify={token => onSolve(token)}
+          onVerify={token => token && onSolve(token)}
         />
       </DialogContent>
     </Dialog>
