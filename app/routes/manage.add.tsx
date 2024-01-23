@@ -51,13 +51,12 @@ export default function AddNewBotStartPage() {
   const { t } = useTranslation('dashboard')
   const navigate = useNavigate()
   const [params] = useSearchParams()
-  
+  const [error, setError] = React.useState<string>('')
+  const [stage, setStage] = React.useState<'initial' | 'verification'>('initial')
+  const [verificationData, setVerificationData] = React.useState({ input: '', output: '' })
+
   const onClose = () => {
     navigate('/manage')
-  }
-
-  const onSubmit = () => {
-    
   }
 
   return (
@@ -66,8 +65,8 @@ export default function AddNewBotStartPage() {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{t('add.title')}</DialogTitle>
-            <DialogDescription className='font-[montserrat] pt-3'>
-              {t('add.step1.description')}
+            <DialogDescription className='font-[montserrat] pt-3 [overflow-wrap:anywhere]'>
+              {stage === 'initial' ? t('add.step1.description') : t('add.step2.description')}
             </DialogDescription>
           </DialogHeader>
           <Formik
@@ -101,29 +100,57 @@ export default function AddNewBotStartPage() {
             validateOnChange
             validateOnMount
             onSubmit={async (values) => {
-              const request = await fetch('/api/bots', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(values)
-              })
-              // if (request.status === 200) {
-              //   const response = await request.json() as { ok: false, error: 'ACCOUNT_NOT_FOUND' | 'INVALID_PASSWORD' } | { ok: true }
-              //   if (!response.ok) {
-              //     if (response.error === 'ACCOUNT_NOT_FOUND') {
-              //       setError(t('form_errors.account_not_found'))
-              //     } else if (response.error === 'INVALID_PASSWORD') {
-              //       setError(t('form_errors.invalid_password'))
-              //     } else {
-              //       setError(t('form_errors.unknown_error'))
-              //     }
-              //   } else {
-              //     onClose()
-              //   }
-              // } else {
-              //   setError(t('form_errors.unknown_error'))
-              // }
+              setError('')
+              try {
+                if(stage === 'initial') {
+                  const request = await fetch('/api/bots/verification', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      sessionID: values.sessionID
+                    })
+                  })
+                  if (request.status === 200) {
+                    const response = await request.json() as { ok: false, error: string } | { ok: true, verification: { input: string, output: string } }
+                    if (!response.ok) {
+                      setError(response.error)
+                    } else {
+                      setStage('verification')
+                      setVerificationData(response.verification)
+                    }
+                  } else {
+                    setError(t('form_errors.unknown_error'))
+                  }
+                } else {
+                  const request = await fetch('/api/bots/add', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      sessionID: values.sessionID,
+                      name: values.name,
+                      ...(values.description && { description: values.description })
+                    })
+                  })
+                  if (request.status === 200) {
+                    const response = await request.json() as { ok: false, error: string } | { ok: true }
+                    if (!response.ok) {
+                      setError(response.error)
+                    } else {
+                      setStage('verification')
+                      navigate('/manage')
+                    }
+                  } else {
+                    setError(t('form_errors.unknown_error'))
+                  }
+                }
+              } catch(e) {
+                console.error(e)
+                setError(t('form_errors.unknown_error'))
+              }
             }}
           >
             {({
@@ -137,54 +164,97 @@ export default function AddNewBotStartPage() {
               isSubmitting
             }) => (
             <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-              <div className='flex flex-col gap-2'>
-                <Input 
-                  name='sessionID'
-                  value={values.sessionID}
-                  type='text'
-                  placeholder='Session ID'
-                  onChange={handleChange}
-                  maxLength={66}
-                  className={errors.sessionID && (values.sessionID !== '') ? 'border-red-600' : ''}
-                  title={errors.sessionID && (values.sessionID !== '') ? errors.sessionID : ''}
-                />
-                <Input 
-                  name='name'
-                  value={values.name}
-                  type='text'
-                  placeholder={t('add.fields.name')}
-                  onChange={handleChange}
-                  maxLength={28}
-                />
-                <Textarea 
-                  name='description'
-                  value={values.description}
-                  placeholder={t('add.fields.description')}
-                  onChange={handleChange}
-                  rows={5}
-                  maxLength={200}
-                  className='font-[montserrat] resize-none'
-                />
-                <span className={cx('self-end text-xs text-muted-foreground font-mono tabular-nums transition-opacity', { 
-                  'opacity-1': values.description.length > 0,
-                  'opacity-0': values.description.length === 0,
-                })}>{values.description.length}/200</span>
-                <div className='mt-2 flex flex-col gap-2'>
-                  <Check checked={values.checkbox1} setFieldValue={setFieldValue} name='checkbox1' />
-                  <Check checked={values.checkbox2} setFieldValue={setFieldValue} name='checkbox2' />
-                  <Check checked={values.checkbox3} setFieldValue={setFieldValue} name='checkbox3' />
-                  <Check checked={values.checkbox4} setFieldValue={setFieldValue} name='checkbox4' />
-                  <Check checked={values.checkbox5} setFieldValue={setFieldValue} name='checkbox5' />
+              {stage === 'initial' ? (<>
+                <div className='flex flex-col gap-2'>
+                  <Input 
+                    name='sessionID'
+                    value={values.sessionID}
+                    type='text'
+                    placeholder='Session ID'
+                    onChange={handleChange}
+                    maxLength={66}
+                    className={errors.sessionID && (values.sessionID !== '') ? 'border-red-600' : ''}
+                    title={errors.sessionID && (values.sessionID !== '') ? errors.sessionID : ''}
+                    disabled={isSubmitting}
+                  />
+                  <Input 
+                    name='name'
+                    value={values.name}
+                    type='text'
+                    placeholder={t('add.fields.name')}
+                    onChange={handleChange}
+                    maxLength={28}
+                    disabled={isSubmitting}
+                  />
+                  <Textarea 
+                    name='description'
+                    value={values.description}
+                    placeholder={t('add.fields.description')}
+                    onChange={handleChange}
+                    rows={5}
+                    maxLength={200}
+                    className='font-[montserrat] resize-none'
+                    disabled={isSubmitting}
+                  />
+                  <span className={cx('self-end text-xs text-muted-foreground font-mono tabular-nums transition-opacity', { 
+                    'opacity-1': values.description.length > 0,
+                    'opacity-0': values.description.length === 0,
+                  })}>{values.description.length}/200</span>
+                  <div className='mt-2 flex flex-col gap-2'>
+                    <Check 
+                      checked={values.checkbox1} 
+                      setFieldValue={setFieldValue} 
+                      name='checkbox1' 
+                      disabled={isSubmitting}
+                    />
+                    <Check 
+                      checked={values.checkbox2} 
+                      setFieldValue={setFieldValue} 
+                      name='checkbox2' 
+                      disabled={isSubmitting}
+                    />
+                    <Check 
+                      checked={values.checkbox3} 
+                      setFieldValue={setFieldValue} 
+                      name='checkbox3' 
+                      disabled={isSubmitting}
+                    />
+                    <Check 
+                      checked={values.checkbox4} 
+                      setFieldValue={setFieldValue} 
+                      name='checkbox4' 
+                      disabled={isSubmitting}
+                    />
+                    <Check 
+                      checked={values.checkbox5} 
+                      setFieldValue={setFieldValue} 
+                      name='checkbox5' 
+                      disabled={isSubmitting}
+                    />
+                  </div>
                 </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  onClick={onSubmit}
-                  disabled={Object.values(errors).filter(Boolean).length > 0}
-                >
-                  {t('add.step1.submit')}
-                </Button>
-              </DialogFooter>
+                <DialogFooter>
+                  <div className='w-full flex items-center justify-between'>
+                    <span className='text-red-600 font-bold text-xs'>{error}</span>
+                    <Button
+                      type='submit'
+                      disabled={Object.values(errors).filter(Boolean).length > 0 || isSubmitting}
+                    >
+                      {t('add.step1.submit')}
+                    </Button>
+                  </div>
+                </DialogFooter>
+              </>) : (<>
+                <div className='flex flex-col gap-2 items-center'>
+                  <DialogDescription>{t('add.step2.text1')}:</DialogDescription>
+                  <div className='font-mono [overflow-wrap:anywhere] p-3 rounded-md bg-neutral-800'>{verificationData.input}</div>
+                  <DialogDescription>{t('add.step2.text2')}:</DialogDescription>
+                  <div className='font-mono [overflow-wrap:anywhere] p-3 rounded-md bg-neutral-800'>{verificationData.output}</div>
+                  <DialogDescription>{t('add.step2.text3')}</DialogDescription>
+                  <span className='text-red-600 font-bold text-sm mt-2'>{error}</span>
+                  <Button className='mt-4 font-bold' disabled={isSubmitting}>{t('add.step2.submit')}</Button>
+                </div>
+              </>)}
             </form>
             )}
           </Formik>
@@ -196,10 +266,11 @@ export default function AddNewBotStartPage() {
 }
 
 
-function Check({ checked, setFieldValue, name }: {
+function Check({ checked, setFieldValue, name, disabled }: {
   checked: boolean
   setFieldValue: (name: string, value: string | boolean) => void
   name: string
+  disabled?: boolean
 }) {
   const { t } = useTranslation('dashboard')
 
@@ -210,6 +281,7 @@ function Check({ checked, setFieldValue, name }: {
         name={name}
         checked={checked}
         onCheckedChange={s => setFieldValue(name, s)}
+        disabled={disabled}
       />
       <label
         htmlFor={name}

@@ -13,7 +13,8 @@ export async function loader({
 }
 
 export async function action({ request }: LoaderFunctionArgs) {
-  const sessionToken = request.headers.get('sessionbots.directory_token')
+  const cookies = cookie.parse(request.headers.get('Cookie') || '')
+  const sessionToken = cookies['sessionbots.directory_token']
   const username = sessionToken && await resolveSession(sessionToken)
   if (username) {
     await deleteSession(sessionToken)

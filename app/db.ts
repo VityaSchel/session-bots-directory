@@ -7,26 +7,22 @@ const __dirname = dirname(fileURLToPath(import.meta.url)) + '/'
 const dbs = new Map<string, Level<string, string>>()
 
 export async function getDb(dbName: string) {
-  const dbNames = ['accounts', 'sessions', 'bots']
+  const dbNames = ['accounts', 'sessions', 'bots', 'verifications']
   if (!dbNames.includes(dbName)) throw new Error(`Invalid db name: ${dbName}`)
+
+  let db: Level<string, string>
+
   if(dbs.has(dbName)) {
-    const db = dbs.get(dbName)!
-    if (db.status !== 'open') {
-      try {
-        await db.open()
-      } catch(e) {
-        if(e instanceof Error)
-          console.error(e.code, e.message)
-        else
-          console.error(e)
-      }
-    }
-    return db
+    db = dbs.get(dbName)!
   } else {
-    const db = new Level(__dirname + `../db/${dbName}`, { valueEncoding: 'json' })
+    db = new Level(__dirname + `../db/${dbName}`, { valueEncoding: 'json' })
     dbs.set(dbName, db)
-    return db
   }
+
+  if(db.status === 'opening')
+    await new Promise(resolve => db.once('ready', resolve))
+
+  return db
 }
 
 process.env.NODE_ENV === 'production' && process.on('sigint', async () => {

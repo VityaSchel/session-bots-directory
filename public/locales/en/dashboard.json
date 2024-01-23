@@ -35,6 +35,18 @@
       "checkbox3": "My bot does not violate the laws and other rules of the site",
       "checkbox4": "I understand that my bot will be automatically tested for violations and I do not plan to change the bot's theme after launch to cheat the moderation system",
       "checkbox5": "I understand that my bot and my account can be deleted at any time without warning by the site moderators"
+    },
+    "step2": {
+      "description": "To verify that you are author of this bot, please add the following command",
+      "text1": "When someone sends this",
+      "text2": "it should reply with this",
+      "text3": "in under 1 second",
+      "submit": "Done, submit for check"
     }
+  },
+  "not_authorized": "You are not authorized to view this page",
+  "no_bots": "У вас нет ботов",
+  "form_errors": {
+    "unknown_error": "Unknown error"
   }
 }
