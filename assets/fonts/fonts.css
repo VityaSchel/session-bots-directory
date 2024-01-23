@@ -12,6 +12,12 @@
 
 @font-face {
   font-family: 'Montserrat';
+  font-weight: 700;
+  src: local('Montserrat'), url('./montserrat-bold.ttf');
+}
+
+@font-face {
+  font-family: 'Montserrat';
   font-weight: 500;
   src: local('Montserrat'), url('./montserrat-medium.ttf');
 }

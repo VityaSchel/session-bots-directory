@@ -1,3 +1,18 @@
 {
-  "title": "Панель управления"
+  "title": "Панель управления",
+  "buttons": {
+    "add": "Добавить нового бота",
+    "change_displayname": "Добавить/изменить имя",
+    "change_password": "Сменить пароль",
+    "delete_account": "Удалить аккаунт"
+  },
+  "bots": {
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "add_description": "Добавить описание",
+    "visibility": {
+      "public": "Опубликован",
+      "hidden": "Скрыт"
+    }
+  }
 }

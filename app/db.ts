@@ -29,9 +29,11 @@ export async function getDb(dbName: string) {
   }
 }
 
-process.on('sigint', async () => {
+process.env.NODE_ENV === 'production' && process.on('sigint', async () => {
   const levelDbs = dbs.values()
   for (const db of levelDbs) {
-    await db.close()
+    if(db.status === 'open') {
+      await db.close()
+    }
   }
 })

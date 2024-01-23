@@ -1,10 +1,4 @@
-export type Bot = {
-  id: string
-  author: string
-  name: string
-  description?: string
-  createdAt: number
-}
+export type Bot = BotSchema
 
 export type BotSchema = {
   id: string
@@ -12,4 +6,7 @@ export type BotSchema = {
   name: string
   description?: string
   createdAt: number
+  status: 'online' | 'offline'
+  visible: boolean
+  views: number
 }
