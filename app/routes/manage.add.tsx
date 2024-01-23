@@ -19,6 +19,7 @@ import * as Yup from 'yup'
 import { Textarea } from '@/shared/shadcn/ui/textarea'
 import { Checkbox } from '@/shared/shadcn/ui/checkbox'
 import cx from 'classnames'
+import { CaptchaDialog } from '@/features/captcha-dialog'
 
 export const handle = { i18n: 'dashboard' }
 
@@ -54,6 +55,7 @@ export default function AddNewBotStartPage() {
   const [error, setError] = React.useState<string>('')
   const [stage, setStage] = React.useState<'initial' | 'verification'>('initial')
   const [verificationData, setVerificationData] = React.useState({ input: '', output: '' })
+  const [captchaVisible, setCaptchaVisible] = React.useState(false)
 
   const onClose = () => {
     navigate('/manage')
@@ -79,6 +81,7 @@ export default function AddNewBotStartPage() {
               checkbox3: false,
               checkbox4: false,
               checkbox5: false,
+              captcha: ''
             }}
             validationSchema={
               Yup.object({
@@ -109,7 +112,7 @@ export default function AddNewBotStartPage() {
                       'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                      sessionID: values.sessionID
+                      sessionID: values.sessionID,
                     })
                   })
                   if (request.status === 200) {
@@ -132,7 +135,8 @@ export default function AddNewBotStartPage() {
                     body: JSON.stringify({
                       sessionID: values.sessionID,
                       name: values.name,
-                      ...(values.description && { description: values.description })
+                      ...(values.description && { description: values.description }),
+                      captcha: values.captcha
                     })
                   })
                   if (request.status === 200) {
@@ -156,108 +160,134 @@ export default function AddNewBotStartPage() {
             {({
               values,
               errors,
-              touched,
               handleChange,
-              handleBlur,
               handleSubmit,
               setFieldValue,
               isSubmitting
-            }) => (
-            <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-              {stage === 'initial' ? (<>
-                <div className='flex flex-col gap-2'>
-                  <Input 
-                    name='sessionID'
-                    value={values.sessionID}
-                    type='text'
-                    placeholder='Session ID'
-                    onChange={handleChange}
-                    maxLength={66}
-                    className={errors.sessionID && (values.sessionID !== '') ? 'border-red-600' : ''}
-                    title={errors.sessionID && (values.sessionID !== '') ? errors.sessionID : ''}
-                    disabled={isSubmitting}
-                  />
-                  <Input 
-                    name='name'
-                    value={values.name}
-                    type='text'
-                    placeholder={t('add.fields.name')}
-                    onChange={handleChange}
-                    maxLength={28}
-                    disabled={isSubmitting}
-                  />
-                  <Textarea 
-                    name='description'
-                    value={values.description}
-                    placeholder={t('add.fields.description')}
-                    onChange={handleChange}
-                    rows={5}
-                    maxLength={200}
-                    className='font-[montserrat] resize-none'
-                    disabled={isSubmitting}
-                  />
-                  <span className={cx('self-end text-xs text-muted-foreground font-mono tabular-nums transition-opacity', { 
-                    'opacity-1': values.description.length > 0,
-                    'opacity-0': values.description.length === 0,
-                  })}>{values.description.length}/200</span>
-                  <div className='mt-2 flex flex-col gap-2'>
-                    <Check 
-                      checked={values.checkbox1} 
-                      setFieldValue={setFieldValue} 
-                      name='checkbox1' 
-                      disabled={isSubmitting}
-                    />
-                    <Check 
-                      checked={values.checkbox2} 
-                      setFieldValue={setFieldValue} 
-                      name='checkbox2' 
-                      disabled={isSubmitting}
-                    />
-                    <Check 
-                      checked={values.checkbox3} 
-                      setFieldValue={setFieldValue} 
-                      name='checkbox3' 
-                      disabled={isSubmitting}
-                    />
-                    <Check 
-                      checked={values.checkbox4} 
-                      setFieldValue={setFieldValue} 
-                      name='checkbox4' 
-                      disabled={isSubmitting}
-                    />
-                    <Check 
-                      checked={values.checkbox5} 
-                      setFieldValue={setFieldValue} 
-                      name='checkbox5' 
-                      disabled={isSubmitting}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <div className='w-full flex items-center justify-between'>
-                    <span className='text-red-600 font-bold text-xs'>{error}</span>
-                    <Button
-                      type='submit'
-                      disabled={Object.values(errors).filter(Boolean).length > 0 || isSubmitting}
-                      className='font-bold'
-                    >
-                      {t('add.step1.submit')}
-                    </Button>
-                  </div>
-                </DialogFooter>
-              </>) : (<>
-                <div className='flex flex-col gap-2 items-center'>
-                  <DialogDescription>{t('add.step2.text1')}:</DialogDescription>
-                  <div className='font-mono [overflow-wrap:anywhere] p-3 rounded-md bg-neutral-800'>{verificationData.input}</div>
-                  <DialogDescription>{t('add.step2.text2')}:</DialogDescription>
-                  <div className='font-mono [overflow-wrap:anywhere] p-3 rounded-md bg-neutral-800'>{verificationData.output}</div>
-                  <DialogDescription>{t('add.step2.text3')}</DialogDescription>
-                  <span className='text-red-600 font-bold text-sm mt-2'>{error}</span>
-                  <Button className='mt-4 font-bold' disabled={isSubmitting}>{t('add.step2.submit')}</Button>
-                </div>
-              </>)}
-            </form>
-            )}
+            }) => {
+              const submitDisabled = Object.values(errors).filter(Boolean).length > 0 || isSubmitting
+
+              const onSubmitBtn = () => {
+                if(submitDisabled) return
+                setCaptchaVisible(true)
+              }
+
+              const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+                if(e.key === 'Enter') {
+                  e.preventDefault()
+                  onSubmitBtn()
+                }
+              }
+
+              return (
+                <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+                  {stage === 'initial' ? (<>
+                    <div className='flex flex-col gap-2'>
+                      <Input 
+                        name='sessionID'
+                        value={values.sessionID}
+                        type='text'
+                        placeholder='Session ID'
+                        onChange={handleChange}
+                        maxLength={66}
+                        className={errors.sessionID && (values.sessionID !== '') ? 'border-red-600' : ''}
+                        title={errors.sessionID && (values.sessionID !== '') ? errors.sessionID : ''}
+                        disabled={isSubmitting}
+                        onKeyDown={handleKeyDown}
+                      />
+                      <Input 
+                        name='name'
+                        value={values.name}
+                        type='text'
+                        placeholder={t('add.fields.name')}
+                        onChange={handleChange}
+                        maxLength={28}
+                        disabled={isSubmitting}
+                        onKeyDown={handleKeyDown}
+                      />
+                      <Textarea 
+                        name='description'
+                        value={values.description}
+                        placeholder={t('add.fields.description')}
+                        onChange={handleChange}
+                        rows={5}
+                        maxLength={200}
+                        className='font-[montserrat] resize-none'
+                        disabled={isSubmitting}
+                      />
+                      <span className={cx('self-end text-xs text-muted-foreground font-mono tabular-nums transition-opacity', { 
+                        'opacity-1': values.description.length > 0,
+                        'opacity-0': values.description.length === 0,
+                      })}>{values.description.length}/200</span>
+                      <div className='mt-2 flex flex-col gap-2'>
+                        <Check 
+                          checked={values.checkbox1} 
+                          setFieldValue={setFieldValue} 
+                          name='checkbox1' 
+                          disabled={isSubmitting}
+                        />
+                        <Check 
+                          checked={values.checkbox2} 
+                          setFieldValue={setFieldValue} 
+                          name='checkbox2' 
+                          disabled={isSubmitting}
+                        />
+                        <Check 
+                          checked={values.checkbox3} 
+                          setFieldValue={setFieldValue} 
+                          name='checkbox3' 
+                          disabled={isSubmitting}
+                        />
+                        <Check 
+                          checked={values.checkbox4} 
+                          setFieldValue={setFieldValue} 
+                          name='checkbox4' 
+                          disabled={isSubmitting}
+                        />
+                        <Check 
+                          checked={values.checkbox5} 
+                          setFieldValue={setFieldValue} 
+                          name='checkbox5' 
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <div className='w-full flex items-center justify-between'>
+                        <span className='text-red-600 font-bold text-xs'>{error}</span>
+                        <Button
+                          onClick={onSubmitBtn}
+                          disabled={submitDisabled}
+                          className='font-bold'
+                        >
+                          {t('add.step1.submit')}
+                        </Button>
+                        <CaptchaDialog
+                          visible={captchaVisible}
+                          onCancel={() => setCaptchaVisible(false)}
+                          onSolve={async captcha => {
+                            setCaptchaVisible(false)
+                            setFieldValue('captcha', captcha)
+                            await new Promise(resolve => setTimeout(resolve, 10))
+                            handleSubmit()
+                          }}
+                        />
+                      </div>
+                    </DialogFooter>
+                  </>) : (<>
+                    <div className='flex flex-col gap-2 items-center'>
+                      <DialogDescription>{t('add.step2.text1')}:</DialogDescription>
+                      <div className='font-mono [overflow-wrap:anywhere] p-3 rounded-md bg-neutral-800'>{verificationData.input}</div>
+                      <DialogDescription>{t('add.step2.text2')}:</DialogDescription>
+                      <div className='font-mono [overflow-wrap:anywhere] p-3 rounded-md bg-neutral-800'>{verificationData.output}</div>
+                      <DialogDescription>{t('add.step2.text3')}</DialogDescription>
+                      <span className='text-red-600 font-bold text-sm mt-2'>{error}</span>
+                      <Button className='mt-4 font-bold' disabled={isSubmitting}>{t('add.step2.submit')}</Button>
+                    </div>
+                  </>)}
+                </form>
+              )
+            }}
           </Formik>
         </DialogContent>
       </Dialog>

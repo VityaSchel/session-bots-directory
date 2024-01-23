@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url)) + '/'
 
 const botsDb = await getDb('bots')
-let bots = Array.from(await botsDb.values().all()).map(bot => JSON.parse(bot) as Bot)
+export let bots = Array.from(await botsDb.values().all()).map(bot => JSON.parse(bot) as Bot)
 
 export async function searchBots({ query, sort }: {
   query: string | null

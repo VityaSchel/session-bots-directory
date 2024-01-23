@@ -34,7 +34,7 @@
     "fields": {
       "name": "Name",
       "description": "Description (optional)",
-      "checkbox1:": "My bot is not about adult content or drugs",
+      "checkbox1": "My bot is not about adult content or drugs",
       "checkbox2": "My bot does not distribute materials protected by copyright",
       "checkbox3": "My bot does not violate the laws and other rules of the site",
       "checkbox4": "I understand that my bot will be automatically tested for violations and I do not plan to change the bot's theme after launch to cheat the moderation system",

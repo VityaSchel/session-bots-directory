@@ -189,6 +189,7 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
                   className={errors.username && touched.username ? 'border-red-600' : ''}
                   title={errors.username && touched.username ? errors.username : ''}
                   maxLength={16}
+                  onKeyDown={e => e.key === 'Enter' && setCaptchaVisible(true)}
                 />
                 <Input
                   type="password"
@@ -200,10 +201,15 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
                   className={errors.password && touched.password ? 'border-red-600' : ''}
                   title={errors.password && touched.password ? errors.password : ''}
                   maxLength={128}
+                  onKeyDown={e => e.key === 'Enter' && setCaptchaVisible(true)}
                 />
               </div>
               <DialogDescription className='font-[montserrat]'>
-                Забыли пароль? <Button variant='link' className='inline-block p-0 h-fit' type='button' onClick={handleSwitchToSignup}>Создайте новый аккаунт</Button> и перенесите ботов туда.
+                {t('login.hint.0')}{' '}
+                <Button variant='link' className='inline-block p-0 h-fit' type='button' onClick={handleSwitchToSignup}>
+                  {t('login.hint.1')}
+                </Button>{' '}
+                {t('login.hint.2')}
               </DialogDescription>
               <DialogFooter>
                 <div className='w-full flex items-center justify-between'>
@@ -333,6 +339,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
                   className={errors.username && touched.username ? 'border-red-600' : ''}
                   title={errors.username && touched.username ? errors.username : ''}
                   maxLength={16}
+                  onKeyDown={e => e.key === 'Enter' && setCaptchaVisible(true)}
                 />
                 <Input
                   type="text"
@@ -344,6 +351,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
                   className={errors.displayName && touched.displayName ? 'border-red-600' : ''}
                   title={errors.displayName && touched.displayName ? errors.displayName : ''}
                   maxLength={36}
+                  onKeyDown={e => e.key === 'Enter' && setCaptchaVisible(true)}
                 />
                 <Input
                   type="password"
@@ -355,10 +363,13 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
                   className={errors.password && touched.password ? 'border-red-600' : ''}
                   title={errors.password && touched.password ? errors.password : ''}
                   maxLength={128}
+                  onKeyDown={e => e.key === 'Enter' && setCaptchaVisible(true)}
                 />
               </div>
               <DialogDescription className='font-[montserrat]'>
-                Уже есть аккаунт? <Button variant='link' className='inline-block p-0 h-fit' type='button' onClick={handleSwitchToLogin}>Войдите в него</Button>
+                {t('signup.hint.0')}{' '}
+                <Button variant='link' className='inline-block p-0 h-fit' type='button' onClick={handleSwitchToLogin}>
+                  {t('signup.hint.1')}</Button>
               </DialogDescription>
               <DialogFooter>
                 <div className='w-full flex flex-col gap-4 510:gap-0 510:flex-row items-center justify-between'>

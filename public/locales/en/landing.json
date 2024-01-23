@@ -3,19 +3,19 @@
   "links": {
     "new": {
       "title": "Discover new bots",
-      "descrption": "Browse our directory of bots that were added recently"
+      "description": "Browse our directory of bots that were added recently"
     },
     "popular": {
       "title": "Open popular bots",
-      "descrption": "Find popular bots that gets more views on our site"
+      "description": "Find popular bots that has most views"
     },
     "byo": {
       "title": "Start building your own bot",
-      "descrption": "Explore documentation and tutorials to learn how to build your own bot"
+      "description": "Explore documentation and tutorials to learn how to build your own bot"
     },
     "ads": {
       "title": "Create your bot with no code",
-      "descrption": "Contact specialist to build your Session bot with no code"
+      "description": "Contact specialist to create Session bot with no programming skills"
     }
   },
   "cta": {

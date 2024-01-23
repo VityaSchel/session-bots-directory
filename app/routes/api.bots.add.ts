@@ -7,6 +7,7 @@ import { hash } from '@/server/hash'
 import { addBot, getBot, getBots } from '@/server/bots'
 import { getDb } from '@/db'
 import { verifyBot, getVerification } from '@/server/verification'
+import { verifyCaptcha } from '@/server/captcha'
 
 export async function loader({
   params,
@@ -16,21 +17,28 @@ export async function loader({
 }
 
 export async function action({ request }: LoaderFunctionArgs) {
-  const body = await request.json() as { sessionID: string, name: string, description?: string}
+  const bodySchema = Yup.object({
+    sessionID: Yup.string()
+      .matches(/^[a-f0-9]{66}$/)
+      .required(),
+    name: Yup.string()
+      .max(28)
+      .required(),
+    description: Yup.string()
+      .min(1)
+      .max(200),
+    captcha: Yup.string()
+      .required()
+  })
+  const body = await request.json() as Yup.InferType<typeof bodySchema>
   try {
-    await Yup.object({
-      sessionID: Yup.string()
-        .matches(/^[a-f0-9]{66}$/)
-        .required(),
-      name: Yup.string()
-        .max(28)
-        .required(),
-      description: Yup.string()
-        .min(1)
-        .max(200),
-    }).validate(body)
+    await bodySchema.validate(body)
   } catch (error) {
     return json({ ok: false }, { status: 400 })
+  }
+
+  if(!await verifyCaptcha(body.captcha)) {
+    return json({ ok: false, error: 'CAPTCHA_NOT_VERIFIED' })
   }
 
   const cookies = cookie.parse(request.headers.get('Cookie') || '')

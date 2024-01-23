@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import plural from 'plural-ru'
 
-export function OnlineBots() {
+export function OnlineBots({ bots }: {
+  bots: number
+}) {
   const { t } = useTranslation('landing')
-
-  const bots = 123
 
   return (
     <div className='flex gap-4 items-center font-[montserrat] text-md xl:text-lg reveal-2'>

@@ -14,17 +14,20 @@ export async function loader({
 }
 
 export async function action({ request }: LoaderFunctionArgs) {
-  const body = await request.json() as { username: string, password: string }
+  const bodySchema = Yup.object({
+    username: Yup.string()
+      .matches(/^[a-zA-Z0-9_]+$/)
+      .max(16)
+      .required(),
+    password: Yup.string()
+      .max(128)
+      .required(),
+    captcha: Yup.string()
+      .required(),
+  })
+  const body = await request.json() as Yup.InferType<typeof bodySchema>
   try {
-    await Yup.object({
-      username: Yup.string()
-        .matches(/^[a-zA-Z0-9_]+$/)
-        .max(16)
-        .required(),
-      password: Yup.string()
-        .max(128)
-        .required(),
-    }).validate(body)
+    await bodySchema.validate(body)
   } catch (error) {
     return json({ ok: false }, { status: 400 })
   }

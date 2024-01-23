@@ -1,7 +1,7 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/node'
+import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { useTranslation } from 'react-i18next'
 import { OnlineBots } from '@/features/online-bots'
-import { Link } from '@remix-run/react'
+import { Link, json, useLoaderData } from '@remix-run/react'
 import { LuClock2 } from 'react-icons/lu'
 import { BsStars } from 'react-icons/bs'
 import { RiToolsLine } from 'react-icons/ri'
@@ -9,6 +9,8 @@ import { CTAForm } from '@/features/cta-form'
 import cx from 'classnames'
 import revealEffects from '@/shared/styles/reveal-effects.css'
 import { HiOutlineChevronRight } from 'react-icons/hi2'
+import cookie from 'cookie'
+import { bots } from '@/server/bots'
 
 export const meta: MetaFunction = () => {
   return [
@@ -21,8 +23,17 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: revealEffects },
 ]
 
+export const loader = async ({
+  request,
+}: LoaderFunctionArgs) => {
+  const onlineBots = bots.filter(bot => bot.status === 'online').length
+
+  return json({ ok: true, onlineBots })
+}
+
 export default function Homepage() {
   const { t } = useTranslation(['common', 'landing'])
+  const { onlineBots } = useLoaderData<typeof loader>()
 
   return (
     <div className='432:p-4 flex flex-col 870:flex-row items-center justify-center gap-8 432:gap-16 870:gap-[5vw] 1060:gap-[10vw] 870:h-[var(--screen)]' style={{ '--screen': 'calc(100vh - 112px)' } as React.CSSProperties}>
@@ -31,7 +42,7 @@ export default function Homepage() {
           <h1 className='text-3xl xl:text-4xl uppercase font-bold'>{t('title')}</h1>
           <h2 className='text-md xl:text-xl font-normal'>{t('description')}</h2>
         </div>
-        <OnlineBots />
+        <OnlineBots bots={onlineBots} />
         <CTAForm />
       </div>
       <div className='max-w-[500px] flex flex-col gap-2'>
