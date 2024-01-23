@@ -16,12 +16,13 @@ const config = {
     },
     extend: {
       screens: {
+        'sm40': '680px',
         '870': '870px',
         'mdlg': '960px',
         '1060': '1060px',
         '1200': '1200px',
-        'sm40': '680px',
-        'xl20': '1300px'
+        'xl20': '1300px',
+        '1400': '1400px'
       },
       colors: {
         brand: '#00f782',

@@ -33,7 +33,7 @@ export function BotCard({ bot }: {
 
   if (reported) {
     return (
-      <Card className="w-full flex justify-center items-center h-[346px]">
+      <Card className="w-[305px] flex justify-center items-center h-[346px]">
         <span className='text-sm text-muted-foreground font-[montserrat]'>
           {t('reported')}
         </span>
@@ -42,7 +42,7 @@ export function BotCard({ bot }: {
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-[305px]">
       <CardHeader className='flex flex-col flex-1 h-60 pb-0'>
         <CardTitle>{bot.name}</CardTitle>
         <span>{t('author')}: <b>{bot.author}</b></span>

@@ -53,12 +53,12 @@ export default function SearchPage() {
   return (
     <div className='w-full flex flex-col gap-6'>
       <div
-        className='w-full flex items-center justify-center py-8'
+        className='w-full flex items-center justify-center 1060:py-8'
       >
         <Form 
           id="search-form" 
           role="search"
-          className='flex flex-col gap-4'
+          className='flex flex-col gap-2 1060:gap-4 max-w-full'
           onChange={(event) => {
             const isFirstSearch = q === null
             submit(event.currentTarget, {
@@ -74,7 +74,7 @@ export default function SearchPage() {
             name="q"
             placeholder={t('placeholder')}
             type="search"  
-            className='text-3xl w-[1050px] h-auto p-8 rounded-2xl'
+            className='text-base md:text-xl 1060:text-3xl w-[1050px] max-w-full h-auto p-4 md:p-6 1060:p-8 md:rounded-xl 1060:rounded-2xl'
           />
           <div className='flex gap-2 items-center ml-auto'>
             <span>{t('sort.title')}:</span>
@@ -127,19 +127,21 @@ function Results({ loading, bots }: {
   }
 
   return (
-    <div className='w-full grid grid-cols-4 p-12 gap-4'>
-      {loading ? (
-        <>
-          <BotCardSkeleton />
-          <BotCardSkeleton />
-          <BotCardSkeleton />
-          <BotCardSkeleton />
-        </>
-      ) : (
-        bots.map(bot => (
-          <BotCard bot={bot} key={bot.id} />
-        ))
-      )}
+    <div className='p-12 w-full flex justify-center'>
+      <div className='grid grid-cols-1 md:grid-cols-2 1060:grid-cols-3 1400:grid-cols-4 gap-4'>
+        {loading ? (
+          <>
+            <BotCardSkeleton />
+            <BotCardSkeleton />
+            <BotCardSkeleton />
+            <BotCardSkeleton />
+          </>
+        ) : (
+          bots.map(bot => (
+            <BotCard bot={bot} key={bot.id} />
+          ))
+        )}
+      </div>
     </div>
   )
 }
