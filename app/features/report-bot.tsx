@@ -15,6 +15,7 @@ import {
 import { Button } from '@/shared/shadcn/ui/button'
 import { useTranslation } from 'react-i18next'
 import { RiFlag2Fill } from 'react-icons/ri'
+import { toast } from 'sonner'
 
 export function ReportBot({ bot, onReported }: {
   bot: Bot
@@ -24,10 +25,36 @@ export function ReportBot({ bot, onReported }: {
   const [captchaVisible, setCaptchaVisible] = React.useState(false)
   const [visible, setVisible] = React.useState(false)
 
-  const handleReport = (captcha: string) => {
+  const handleReport = async (captcha: string) => {
     setCaptchaVisible(false)
     setVisible(false)
-    onReported()
+    try {
+      const request = await fetch('/api/report', {
+        method: 'POST',
+        body: JSON.stringify({
+          botId: bot.id,
+          captcha
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      if(request.status !== 200) {
+        toast.error(t('report.error'))
+      } else {
+        const response = await request.json() as { ok: true } | { ok: false, error: string }
+        if(!response.ok) {
+          console.error(response.error)
+          toast.error(t('report.error'))
+        } else {
+          onReported()
+          toast.success(t('report.success'))
+        }
+      }
+    } catch(e) {
+      console.error(e)
+      toast.error(t('report.error'))
+    }
   }
 
   return (
@@ -45,8 +72,8 @@ export function ReportBot({ bot, onReported }: {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setVisible(false)}>{t('report.cancel')}</AlertDialogCancel>
-          <Button onClick={() => setCaptchaVisible(true)}>{t('report.submit')}</Button>
+          <AlertDialogCancel className='font-bold' onClick={() => setVisible(false)}>{t('report.cancel')}</AlertDialogCancel>
+          <Button className='font-bold' onClick={() => setCaptchaVisible(true)}>{t('report.submit')}</Button>
           <CaptchaDialog 
             visible={captchaVisible} 
             onCancel={() => setCaptchaVisible(false)}

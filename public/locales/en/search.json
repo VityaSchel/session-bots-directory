@@ -14,7 +14,9 @@
     "title": ["Report", "bot"],
     "description": "If you think this bot is breaking the rules, please report it. If you need urgent help, please contact me in Telegram using link in the footer of the website.",
     "cancel": "Cancel",
-    "submit": "Send report"
+    "submit": "Send report",
+    "error": "Something went wrong. Please try again later.",
+    "success": "Report sent. Thank you for your help!"
   },
   "reported": "Content flagged and reported"
 }
