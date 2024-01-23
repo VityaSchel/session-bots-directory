@@ -4,6 +4,7 @@ import { LoaderFunctionArgs, json } from '@remix-run/node'
 import * as Yup from 'yup'
 import cookie from 'cookie'
 import { nanoid } from 'nanoid'
+import { verifyCaptcha } from '@/server/captcha'
 
 export async function loader({
   params,
@@ -26,6 +27,10 @@ export async function action({ request }: LoaderFunctionArgs) {
     }).validate(body)
   } catch (error) {
     return json({ ok: false }, { status: 400 })
+  }
+
+  if(!verifyCaptcha(body.captcha)) {
+    return json({ ok: false, error: 'CAPTCHA_NOT_VERIFIED' }, { status: 400 })
   }
 
   const account = await getAccount(body.username)

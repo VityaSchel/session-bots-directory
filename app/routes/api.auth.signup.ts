@@ -5,6 +5,7 @@ import cookie from 'cookie'
 import { nanoid } from 'nanoid'
 import { hash } from '@/server/hash'
 import { isSafe } from '@/server/moderation'
+import { verifyCaptcha } from '@/server/captcha'
 
 export async function loader({
   params,
@@ -14,24 +15,31 @@ export async function loader({
 }
 
 export async function action({ request }: LoaderFunctionArgs) {
-  const body = await request.json() as { username: string, displayName?: string, password: string }
+  const bodySchema = Yup.object({
+    username: Yup.string()
+      .min(1)
+      .matches(/^[a-zA-Z0-9_]+$/)
+      .max(16)
+      .required(),
+    displayName: Yup.string()
+      .min(1)
+      .max(36),
+    password: Yup.string()
+      .min(1)
+      .max(128)
+      .required(),
+    captcha: Yup.string()
+      .required(),
+  })
+  const body = await request.json() as Yup.InferType<typeof bodySchema>
   try {
-    await Yup.object({
-      username: Yup.string()
-        .min(1)
-        .matches(/^[a-zA-Z0-9_]+$/)
-        .max(16)
-        .required(),
-      displayName: Yup.string()
-        .min(1)
-        .max(36),
-      password: Yup.string()
-        .min(1)
-        .max(128)
-        .required(),
-    }).validate(body)
+    await bodySchema.validate(body)
   } catch (error) {
     return json({ ok: false }, { status: 400 })
+  }
+
+  if (!await verifyCaptcha(body.captcha)) {
+    return json({ ok: false, error: 'CAPTCHA_NOT_VERIFIED' }, { status: 400 })
   }
 
   const account = await getAccount(body.username)

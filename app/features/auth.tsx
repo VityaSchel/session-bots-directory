@@ -16,6 +16,7 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 import Cookies from 'js-cookie'
 import { Link, useNavigate, useRevalidator, useSearchParams } from '@remix-run/react'
+import { CaptchaDialog } from '@/features/captcha-dialog'
 
 export function Auth() {
   const { t } = useTranslation('navbar')
@@ -107,6 +108,7 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
   const revalidator = useRevalidator()
+  const [captchaVisible, setCaptchaVisible] = React.useState(false)
 
   const handleSwitchToSignup = switchToSignup
 
@@ -172,6 +174,7 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
             handleChange,
             handleBlur,
             handleSubmit,
+            setFieldValue,
             isSubmitting
           }) => (
             <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
@@ -205,7 +208,22 @@ function LoginDialog({ visible, switchToSignup, onClose }: {
               <DialogFooter>
                 <div className='w-full flex items-center justify-between'>
                   <span className='text-red-600 font-bold text-xs'>{error}</span>
-                  <Button type="submit" disabled={isSubmitting}>{t('login.submit')}</Button>
+                  <Button
+                    type="button"
+                    disabled={isSubmitting}
+                    onClick={() => setCaptchaVisible(true)}
+                    className='font-bold'
+                  >{t('login.submit')}</Button>
+                  <CaptchaDialog
+                    visible={captchaVisible}
+                    onCancel={() => setCaptchaVisible(false)}
+                    onSolve={async captcha => {
+                      setCaptchaVisible(false)
+                      setFieldValue('captcha', captcha)
+                      await new Promise(resolve => setTimeout(resolve, 10))
+                      handleSubmit()
+                    }}
+                  />
                 </div>
               </DialogFooter>
             </form>
@@ -225,6 +243,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
   const revalidator = useRevalidator()
+  const [captchaVisible, setCaptchaVisible] = React.useState(false)
 
   const handleSwitchToLogin = switchToLogin
 
@@ -241,7 +260,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
           <DialogTitle>{t('signup.title')}</DialogTitle>
         </DialogHeader>
         <Formik
-          initialValues={{ username: '', password: '', displayName: '' }}
+          initialValues={{ username: '', password: '', displayName: '', captcha: '' }}
           validationSchema={
             Yup.object({
               username: Yup.string()
@@ -264,7 +283,8 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
               body: JSON.stringify({
                 username: values.username,
                 password: values.password,
-                ...(values.displayName ? { displayName: values.displayName } : {})
+                ...(values.displayName ? { displayName: values.displayName } : {}),
+                captcha: values.captcha
               })
             })
             if(request.status === 200) {
@@ -298,6 +318,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
             handleChange,
             handleBlur,
             handleSubmit,
+            setFieldValue,
             isSubmitting
           }) => (
             <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
@@ -342,7 +363,22 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
               <DialogFooter>
                 <div className='w-full flex flex-col gap-4 510:gap-0 510:flex-row items-center justify-between'>
                   <span className='text-red-600 font-bold text-sm'>{error}</span>
-                  <Button type="submit" className='font-bold' disabled={isSubmitting}>{t('signup.submit')}</Button>
+                  <Button
+                    type="button"
+                    disabled={isSubmitting}
+                    onClick={() => setCaptchaVisible(true)}
+                    className='font-bold'
+                  >{t('signup.submit')}</Button>
+                  <CaptchaDialog 
+                    visible={captchaVisible}
+                    onCancel={() => setCaptchaVisible(false)}
+                    onSolve={async captcha => {
+                      setCaptchaVisible(false)
+                      setFieldValue('captcha', captcha)
+                      await new Promise(resolve => setTimeout(resolve, 10))
+                      handleSubmit()
+                    }}
+                  />
                 </div>
               </DialogFooter>
             </form>
