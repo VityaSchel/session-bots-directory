@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
     "clsx": "^2.1.0",
+    "cookie": "^0.6.0",
     "copy-to-clipboard": "^3.3.3",
     "formik": "^2.4.5",
     "i18next": "^23.7.18",
