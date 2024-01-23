@@ -25,7 +25,7 @@ export default function Homepage() {
   const { t } = useTranslation(['common', 'landing'])
 
   return (
-    <div className='p-4 flex flex-col 870:flex-row items-center justify-center gap-16 870:gap-[5vw] 1060:gap-[10vw] 870:h-[var(--screen)]' style={{ '--screen': 'calc(100vh - 112px)' } as React.CSSProperties}>
+    <div className='432:p-4 flex flex-col 870:flex-row items-center justify-center gap-8 432:gap-16 870:gap-[5vw] 1060:gap-[10vw] 870:h-[var(--screen)]' style={{ '--screen': 'calc(100vh - 112px)' } as React.CSSProperties}>
       <div className='flex flex-col gap-6 max-w-[700px]'>
         <div className='flex flex-col gap-2 reveal-1'>
           <h1 className='text-3xl xl:text-4xl uppercase font-bold'>{t('title')}</h1>

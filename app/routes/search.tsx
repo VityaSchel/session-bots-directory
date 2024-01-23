@@ -76,7 +76,7 @@ export default function SearchPage() {
             type="search"  
             className='text-base md:text-xl 1060:text-3xl w-[1050px] max-w-full h-auto p-4 md:p-6 1060:p-8 md:rounded-xl 1060:rounded-2xl'
           />
-          <div className='flex gap-2 items-center ml-auto'>
+          <div className='flex gap-2 items-center ml-auto text-xs md:text-sm 1060:text-base'>
             <span>{t('sort.title')}:</span>
             <Select
               name='sort'
@@ -127,7 +127,7 @@ function Results({ loading, bots }: {
   }
 
   return (
-    <div className='p-12 w-full flex justify-center'>
+    <div className='520:p-12 w-full flex justify-center'>
       <div className='grid grid-cols-1 md:grid-cols-2 1060:grid-cols-3 1400:grid-cols-4 gap-4'>
         {loading ? (
           <>

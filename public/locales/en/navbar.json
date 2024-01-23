@@ -10,5 +10,9 @@
     "login": "Login",
     "logout": "Logout",
     "signup": "Sign up"
+  },
+  "manage": {
+    "title": "Open dashboard",
+    "title_short": "My bots"
   }
 }

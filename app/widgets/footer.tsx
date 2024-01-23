@@ -9,7 +9,7 @@ export function Footer() {
   return (
     <footer className='w-full p-4 flex flex-col gap-2 bg-neutral-900 text-sm text-neutral-600'>
       <span>{t('disclaimer')}</span>
-      <div className='flex gap-5'>
+      <div className='flex flex-col 1060:flex-row gap-2 1060:gap-5'>
         <Link className='hover:text-brand' to='https://github.com/vityaSchel/session-bots-directory/tree/main/GUIDELINES.md' target='_blank' rel='noreferrer'>
           {t('links.guidelines')}
         </Link>

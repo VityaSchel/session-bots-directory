@@ -15,7 +15,7 @@ import { Label } from '@/shared/shadcn/ui/label'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import Cookies from 'js-cookie'
-import { useNavigate, useSearchParams } from '@remix-run/react'
+import { Link, useNavigate, useSearchParams } from '@remix-run/react'
 
 export function Auth() {
   const { t } = useTranslation('navbar')
@@ -43,9 +43,9 @@ export function Auth() {
   }, [params])
 
   return (
-    <div className='flex items-center gap-4'>
+    <div className='flex items-center gap-2 font-normal 510:gap-4'>
       {isAuthorized ? (<>
-        <Button variant={'outline'} className='font-bold' onClick={() => setLogoutDialogVisible(true)}>
+        <Button variant={'outline'} className='text-sm 510:text-base font-bold' onClick={() => setLogoutDialogVisible(true)}>
           <span className='hidden 1200:block'>{t('auth.logout')}</span>
           <span className='block 1200:hidden'>{t(['auth.logout_short', 'auth.logout'])}</span>
         </Button>
@@ -56,8 +56,14 @@ export function Auth() {
             getIsAuthorized()
           }}
         />
+        <Link to='/manage'>
+          <Button className='text-sm 510:text-base font-bold'>
+            <span className='hidden 1200:block'>{t('manage.title')}</span>
+            <span className='block 1200:hidden'>{t('manage.title_short')}</span>
+          </Button>
+        </Link>
       </>) : (<>
-        <Button variant={'outline'} className='font-bold' onClick={() => setLoginDialogVisible(true)}>
+        <Button variant={'outline'} className='text-sm 510:text-base font-bold' onClick={() => setLoginDialogVisible(true)}>
           <span className='hidden 1200:block'>{t('auth.login')}</span>
           <span className='block 1200:hidden'>{t(['auth.login_short', 'auth.login'])}</span>
         </Button>
@@ -72,7 +78,7 @@ export function Auth() {
             getIsAuthorized()
           }}
         />
-        <Button className='font-bold' onClick={() => setSignupDialogVisible(true)}>
+        <Button className='hidden 480:block text-sm 510:text-base font-bold' onClick={() => setSignupDialogVisible(true)}>
           <span className='hidden 1200:block'>{t('auth.signup')}</span>
           <span className='block 1200:hidden'>{t(['auth.signup_short', 'auth.signup'])}</span>
         </Button>
@@ -318,7 +324,7 @@ function SignupDialog({ visible, switchToLogin, onClose }: {
                 Уже есть аккаунт? <Button variant='link' className='inline-block p-0 h-fit' type='button' onClick={handleSwitchToLogin}>Войдите в него</Button>
               </DialogDescription>
               <DialogFooter>
-                <div className='w-full flex items-center justify-between'>
+                <div className='w-full flex flex-col gap-4 510:gap-0 510:flex-row items-center justify-between'>
                   <span className='text-red-600 font-bold text-sm'>{error}</span>
                   <Button type="submit" disabled={isSubmitting}>{t('signup.submit')}</Button>
                 </div>

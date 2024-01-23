@@ -45,7 +45,7 @@ export function ReportBot({ bot, onReported }: {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{t('report.cancel')}</AlertDialogCancel>
+          <AlertDialogCancel onClick={() => setVisible(false)}>{t('report.cancel')}</AlertDialogCancel>
           <Button onClick={() => setCaptchaVisible(true)}>{t('report.submit')}</Button>
           <CaptchaDialog 
             visible={captchaVisible} 

@@ -1,13 +1,8 @@
-import { Level } from 'level'
 import { AccountSchema } from '@/shared/model/account'
+import { getDb } from '@/db'
 
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-
-const __dirname = dirname(fileURLToPath(import.meta.url)) + '/'
-
-const accounts = new Level(__dirname + '../db/accounts', { valueEncoding: 'json' })
-const sessions = new Level(__dirname + '../db/sessions', { valueEncoding: 'json' })
+const accounts = await getDb('accounts')
+const sessions = await getDb('sessions')
 
 export async function getAccount(username: string): Promise<AccountSchema | null> {
   try {
@@ -84,8 +79,3 @@ export async function resolveSession(token: string) {
     throw error
   }
 }
-
-process.on('sigint', async () => {
-  await sessions.close()
-  await accounts.close()
-})

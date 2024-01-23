@@ -9,9 +9,13 @@
   "auth": {
     "login": "Войти в аккаунт",
     "login_short": "Войти",
-    "logout": "Выйти из аккаунта",
+    "logout": "Выйти",
     "logout_short": "Выйти",
     "signup": "Зарегистрироваться",
     "signup_short": "Регистрация"
+  },
+  "manage": {
+    "title": "Панель управления",
+    "title_short": "Мои боты"
   }
 }

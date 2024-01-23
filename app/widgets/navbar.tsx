@@ -15,7 +15,7 @@ export function NavBar() {
   return (
     <nav className='w-full h-20 flex items-center p-4 bg-neutral-900 justify-between gap-4 font-bold z-10 fixed top-0'>
       <div className='flex items-center gap-6 lg:gap-12 xl:gap-20 h-full'>
-        <Link to="/" className='block h-full'>
+        <Link to="/" className='flex h-full items-center'>
           <img 
             src={LogoSmall} 
             alt='Session Bots Directory logo' 
