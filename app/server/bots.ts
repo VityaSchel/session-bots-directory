@@ -80,7 +80,11 @@ export async function deleteBots(botsIds: string[]) {
 export async function updateBot<E extends keyof Bot>(botId: string, property: E, newValue: Bot[E]) {
   const bot = await getBot(botId)
   if (!bot) return
-  bot[property] = newValue
+  if(newValue === undefined) {
+    delete bot[property]
+  } else {
+    bot[property] = newValue
+  }
   await botsDb.put(botId, JSON.stringify(bot))
   const index = bots.findIndex(b => b.id === botId)
   bots[index] = bot

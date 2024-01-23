@@ -27,7 +27,6 @@ export async function action({ request }: LoaderFunctionArgs) {
         visibility: Yup.string()
           .oneOf(['public', 'hidden']),
         description: Yup.string()
-          .min(1)
           .max(200),
         name: Yup.string()
           .min(1)
@@ -58,7 +57,7 @@ export async function action({ request }: LoaderFunctionArgs) {
     }
 
     if(body.description !== undefined) {
-      await updateBot(body.botId, 'description', body.description)
+      await updateBot(body.botId, 'description', body.description || undefined)
     }
 
     if (body.name !== undefined) {

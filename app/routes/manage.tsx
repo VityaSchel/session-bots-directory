@@ -20,6 +20,7 @@ import { Bot } from '@/shared/model/bot'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/shared/shadcn/ui/select'
 import { Link, Outlet, useLoaderData, useNavigate, useRevalidator } from '@remix-run/react'
 import { toast } from 'sonner'
+import { Textarea } from '@/shared/shadcn/ui/textarea'
 
 export const handle = { i18n: 'dashboard' }
 
@@ -121,6 +122,8 @@ function BotCard({ bot }: {
   const { t } = useTranslation('dashboard')
   const navigate = useNavigate()
   const revalidator = useRevalidator()
+  const [isAddingDescription, setIsAddingDescription] = React.useState(false)
+  const [freshlyAddedDescriptionValue, setFreshlyAddedDescriptionValue] = React.useState('')
 
   const handleDeleteBot = async () => {
     const request = await fetch('/api/bots/update', {
@@ -142,6 +145,32 @@ function BotCard({ bot }: {
     }
   }
 
+  const handleStartAddingDescription = () => {
+    setIsAddingDescription(true)
+  }
+
+  const handleFinishAddingDescription = async () => {
+    setIsAddingDescription(false)
+    const request = await fetch('/api/bots/update', {
+      method: 'POST',
+      body: JSON.stringify({
+        botId: bot.id,
+        description: freshlyAddedDescriptionValue
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const response = await request.json() as { ok: true } | { ok: false, error: string }
+    if(response.ok) {
+      toast.success(t('bots.update_success'))
+      navigate('/manage', { replace: true })
+      revalidator.revalidate()
+    } else {
+      toast.error(t('bots.update_error'))
+    }
+  }
+
   return (
     <Card className="w-full max-w-full flex flex-col h-[346px]">
       <CardHeader>
@@ -149,7 +178,20 @@ function BotCard({ bot }: {
         <CardDescription className='[overflow-wrap:anywhere]'>SessionID: <b>{bot.id}</b></CardDescription>
       </CardHeader>
       <CardContent className='font-[montserrat] text-muted-foreground flex-1 [overflow-wrap:anywhere]'>
-        {bot.description || <Button variant='ghost' className='font-bold'>{t('bots.add_description')}</Button>}
+        {isAddingDescription ? (
+          <Textarea 
+            value={freshlyAddedDescriptionValue} 
+            onChange={e => setFreshlyAddedDescriptionValue(e.target.value)}
+            onBlur={handleFinishAddingDescription}
+            placeholder={t('add.fields.description')}
+            className='h-full resize-none'
+            maxLength={200}
+          />
+        ) : (
+          bot.description || <Button variant='ghost' className='font-bold' onClick={handleStartAddingDescription}>
+            {t('bots.add_description')}
+          </Button>
+        )}
       </CardContent>
       <CardFooter className="flex justify-between">
         <Select
@@ -186,10 +228,12 @@ function BotCard({ bot }: {
           </SelectContent>
         </Select>
         <div className='flex gap-2'>
-          <Button className='font-bold' variant="secondary" size='icon'>
-            {/* {t('bots.edit')} */}
-            <MdEdit size={20} />
-          </Button>
+          <Link to={`/manage/bot/${bot.id}`}>
+            <Button className='font-bold' variant="secondary" size='icon'>
+              {/* {t('bots.edit')} */}
+              <MdEdit size={20} />
+            </Button>
+          </Link>
           <Button className='font-bold' variant={'destructive'} size='icon' onClick={handleDeleteBot}>
             {/* {t('bots.delete')} */}
             <MdDelete size={20} />

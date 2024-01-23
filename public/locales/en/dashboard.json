@@ -76,6 +76,9 @@
       "description": "This will delete your account and all bots associated with it. This action is irreversible once you click 'Go ahead' button below.",
       "submit": "Go ahead",
       "cancel": "Cancel"
+    },
+    "edit_bot": {
+      "title": "Edit bot"
     }
   }
 }
