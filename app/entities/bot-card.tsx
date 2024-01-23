@@ -33,7 +33,7 @@ export function BotCard({ bot }: {
 
   if (reported) {
     return (
-      <Card className="w-[305px] flex justify-center items-center h-[346px]">
+      <Card className="w-[305px] flex justify-center items-center h-[404px]">
         <span className='text-sm text-muted-foreground font-[montserrat]'>
           {t('reported')}
         </span>
@@ -43,10 +43,10 @@ export function BotCard({ bot }: {
 
   return (
     <Card className="w-[305px]">
-      <CardHeader className='flex flex-col flex-1 h-60 pb-0'>
+      <CardHeader className='flex flex-col flex-1 h-[298px] pb-0'>
         <CardTitle>{bot.name}</CardTitle>
         <span>{t('author')}: <b>{bot.author}</b></span>
-        <CardDescription className='font-[montserrat] flex-1 break-words'>
+        <CardDescription className='font-[montserrat] flex-1 break-words whitespace-pre-wrap [display: -webkit-box] overflow-hidden text-ellipsis line-clamp-[10]'>
           {bot.description || <span className='text-neutral-700'>{t('no_description')}</span>}
         </CardDescription>
       </CardHeader>
@@ -79,6 +79,6 @@ export function BotCard({ bot }: {
 
 export function BotCardSkeleton() {
   return (
-    <Skeleton className="w-full h-[346px] rounded-xl" />
+    <Skeleton className="w-full h-[404px] rounded-xl" />
   )
 }

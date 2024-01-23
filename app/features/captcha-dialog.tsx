@@ -18,11 +18,11 @@ export function CaptchaDialog({ visible, onSolve, onCancel }: {
   onCancel: () => void
 }) {
   return (
-    <Dialog open={visible} onOpenChange={(visible) => !visible && onCancel()}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={visible} onOpenChange={(newVisible) => visible && onCancel()}>
+      <DialogContent className="sm:max-w-[425px]" onOpenAutoFocus={e => e.preventDefault()}>
         <HCaptcha
           sitekey="c393c3af-1017-43a3-9988-c9a91c1913b4"
-          onVerify={token => token && onSolve(token)}
+          onVerify={onSolve}
         />
       </DialogContent>
     </Dialog>

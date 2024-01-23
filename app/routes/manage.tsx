@@ -177,7 +177,7 @@ function BotCard({ bot }: {
         <CardTitle>{bot.name}</CardTitle>
         <CardDescription className='[overflow-wrap:anywhere]'>SessionID: <b>{bot.id}</b></CardDescription>
       </CardHeader>
-      <CardContent className='font-[montserrat] text-muted-foreground flex-1 [overflow-wrap:anywhere]'>
+      <CardContent className='font-[montserrat] text-muted-foreground flex-1 [overflow-wrap:anywhere] whitespace-pre-wrap [display: -webkit-box] overflow-hidden text-ellipsis line-clamp-[10]'>
         {isAddingDescription ? (
           <Textarea 
             value={freshlyAddedDescriptionValue} 
