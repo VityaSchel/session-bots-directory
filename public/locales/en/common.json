@@ -1,5 +1,9 @@
 {
   "title": "Session Bots directory",
   "description": "Discover bots created by Session messenger developers community",
-  "ads": "Ads"
+  "ads": "Ads",
+  "bot_online": "Online",
+  "bot_offline": "Offline for",
+  "hours": "hours",
+  "days": "days"
 }

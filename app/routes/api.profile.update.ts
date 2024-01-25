@@ -1,10 +1,9 @@
-import { addAccount, addSession, deleteAccount, getAccount, resolveSession } from '@/server/auth'
+import { deleteAccount, getAccount, resolveSession } from '@/server/auth'
 import { LoaderFunctionArgs, json } from '@remix-run/node'
 import * as Yup from 'yup'
 import cookie from 'cookie'
-import { nanoid } from 'nanoid'
 import { hash } from '@/server/hash'
-import { addBot, deleteBots, getBot, getBots } from '@/server/bots'
+import { deleteBots } from '@/server/bots'
 import { getDb } from '@/db'
 import { isSafe } from '@/server/moderation'
 

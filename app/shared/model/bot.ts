@@ -9,4 +9,6 @@ export type BotSchema = {
   status: 'online' | 'offline'
   visible: boolean
   views: number
+  checksFails: number
+  lastChecked: number
 }

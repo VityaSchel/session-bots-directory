@@ -22,6 +22,7 @@ import { Link, Outlet, useLoaderData, useNavigate, useRevalidator } from '@remix
 import { toast } from 'sonner'
 import { Textarea } from '@/shared/shadcn/ui/textarea'
 import { BotFullDescription } from '@/entities/bot-full-description'
+import { OnlineOfflineIndicator } from '@/entities/online-offline-indicator'
 
 export const handle = { i18n: 'dashboard' }
 
@@ -177,7 +178,13 @@ function BotCard({ bot }: {
   return (
     <Card className="w-full max-w-full flex flex-col h-[380px]">
       <CardHeader>
-        <CardTitle className='[overflow-wrap:anywhere]'>{bot.name}</CardTitle>
+        <CardTitle className='[overflow-wrap:anywhere]'>
+          {bot.name}
+          <OnlineOfflineIndicator 
+            online={bot.status == 'online'} 
+            offlineFails={bot.checksFails}
+          />
+        </CardTitle>
         <CardDescription className='[overflow-wrap:anywhere]'>SessionID: <b>{bot.id}</b></CardDescription>
       </CardHeader>
       <CardContent className='font-[montserrat] text-muted-foreground flex-1 [overflow-wrap:anywhere] whitespace-pre-wrap [display: -webkit-box] overflow-hidden text-ellipsis line-clamp-[10] relative'>

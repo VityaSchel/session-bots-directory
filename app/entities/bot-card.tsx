@@ -16,6 +16,7 @@ import { useLocale } from 'remix-i18next'
 import { ReportBot } from '@/features/report-bot'
 import { Skeleton } from '@/shared/shadcn/ui/skeleton'
 import { BotFullDescription } from '@/entities/bot-full-description'
+import { OnlineOfflineIndicator } from '@/entities/online-offline-indicator'
 
 export const handle = { i18n: 'search' }
 
@@ -46,7 +47,13 @@ export function BotCard({ bot }: {
   return (
     <Card className="w-[305px]">
       <CardHeader className='flex flex-col flex-1 h-[298px] pb-0'>
-        <CardTitle>{bot.name}</CardTitle>
+        <CardTitle>
+          {bot.name} 
+          <OnlineOfflineIndicator 
+            online={bot.status == 'online'} 
+            offlineFails={bot.checksFails}
+          />
+        </CardTitle>
         <span>{t('author')}: <b>{bot.author}</b></span>
         <CardDescription className='font-[montserrat] flex-1 break-words whitespace-pre-wrap [display: -webkit-box] overflow-hidden text-ellipsis line-clamp-[10]'>
           {bot.description || <span className='text-neutral-700'>{t('no_description')}</span>}

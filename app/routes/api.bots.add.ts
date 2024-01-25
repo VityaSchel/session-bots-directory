@@ -70,8 +70,10 @@ export async function action({ request }: LoaderFunctionArgs) {
     author: account.username,
     createdAt: Date.now(),
     views: 0,
-    status: 'offline',
-    visible: true
+    status: 'online',
+    visible: true,
+    checksFails: 0,
+    lastChecked: Date.now(),
   })
 
   return json({ ok: true })

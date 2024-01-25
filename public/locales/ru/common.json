@@ -1,5 +1,9 @@
 {
   "title": "Session Bots directory",
   "description": "Откройте для себя ботов в Session, созданных другими разработчиками",
-  "ads": "Реклама"
+  "ads": "Реклама",
+  "bot_online": "Онлайн",
+  "bot_offline": "Офлайн",
+  "hours": "ч",
+  "days": "дн"
 }
