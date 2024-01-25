@@ -29,7 +29,26 @@ export function BotCard({ bot }: {
   const [reported, setReported] = React.useState(false)
   const [openFullDescription, setOpenFullDescription] = React.useState(false)
 
-  const handleCopy = () => {
+  const incrementViews = async () => {
+    window.localStorage.setItem('lastCopied' + bot.id, String(Date.now()))
+    // fair use pls and no spam ok?
+    await fetch('/api/bots/view', {
+      method: 'POST',
+      body: JSON.stringify({ id: bot.id }),
+    })
+  }
+
+  const handleCopy = async () => {
+    const lastCopied = window.localStorage.getItem('lastCopied' + bot.id)
+    if(lastCopied === null) {
+      incrementViews()
+    } else {
+      if (lastCopied && Number.isSafeInteger(lastCopied)) {
+        if(Date.now() - Number(lastCopied) > 1000 * 60 * 60 * 24) {
+          incrementViews()
+        }
+      }
+    }
     copy(bot.id)
     setCopied(true)
   }

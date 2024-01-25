@@ -25,8 +25,15 @@ export async function searchBots({ query, sort }: {
   if(sort) {
     if(sort === 'oldest') {
       results = results.sort((a, b) => a.createdAt - b.createdAt)
-    } else {
+    } else if(sort === 'newest') {
       results = results.sort((a, b) => b.createdAt - a.createdAt)
+    } else if(sort === 'popular') {
+      results = results.sort((a, b) => {
+        if (b.views - a.views !== 0) {
+          return b.views - a.views
+        }
+        return Number(b.status === 'online') - Number(a.status === 'online')
+      })
     }
   }
   return results
