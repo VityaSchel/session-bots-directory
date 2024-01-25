@@ -22,7 +22,7 @@ export function getDb(dbName: typeof dbNames[number]): DB {
     get: (key) => redisClient.get(`${dbName}:${key}`),
     put: (key, value) => redisClient.set(`${dbName}:${key}`, value),
     del: (...keys: RedisKey[]) => redisClient.del(keys.map(key => `${dbName}:${key}`)),
-    keys: () => redisClient.keys(`${dbName}:*`),
+    keys: async () => (await redisClient.keys(`${dbName}:*`)).map(key => key.replace(`${dbName}:`, '')),
     mget: async (keys: RedisKey[]) => keys.length ? await redisClient.mget(...keys.map(key => `${dbName}:${key}`)) : []
   }
 }
