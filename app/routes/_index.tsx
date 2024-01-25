@@ -47,7 +47,7 @@ export default function Homepage() {
       <div className='max-w-[500px] flex flex-col gap-2'>
         <PageLink
           icon={<LuClock2 />}
-          to='/search?sort=new'
+          to='/search?sort=newest'
           title={t('links.new.title', { ns: 'landing' })}
           description={t('links.new.description', { ns: 'landing' })}
           className='reveal-up-1'

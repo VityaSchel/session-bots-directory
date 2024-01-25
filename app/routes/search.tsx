@@ -85,7 +85,9 @@ export default function SearchPage() {
               value={sortValue || 'popular'}
               onValueChange={sortValue => {
                 setSortValue(sortValue as 'popular' | 'newest' | 'oldest')
-                submit(formRef.current)
+                setTimeout(() => {
+                  submit(formRef.current)
+                }, 5)
               }}
             >
               <SelectTrigger className="w-[200px]">

@@ -23,11 +23,11 @@ export function NavBar() {
           />
         </Link>
         <div className='hidden items-center gap-8 mdlg:flex'>
-          <PageLink to='/search?sort=new'>
+          <PageLink to='/search?q=&sort=newest'>
             <span className='hidden xl20:block'>{t('new')}</span>
             <span className='block xl20:hidden'>{t('new_short')}</span>
           </PageLink>
-          <PageLink to='/search?sort=popular'>
+          <PageLink to='/search?q=&sort=popular'>
             <span className='hidden xl20:block'>{t('popular')}</span>
             <span className='block xl20:hidden'>{t('popular_short')}</span>
           </PageLink>
