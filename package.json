@@ -8,6 +8,7 @@
     "dev": "remix dev --manual",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "dotenv -e .env.production remix-serve ./build/index.js",
+    "clear-db": "find db/** -name LOCK -type f -delete",
     "typecheck": "tsc"
   },
   "dependencies": {

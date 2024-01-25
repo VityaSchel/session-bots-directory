@@ -274,7 +274,12 @@ export default function AddNewBotStartPage() {
                       <div className='font-mono [overflow-wrap:anywhere] p-3 rounded-md bg-neutral-800'>{verificationData.output}</div>
                       <DialogDescription>{t('add.step2.text3')}</DialogDescription>
                       <span className='text-red-600 font-bold text-sm mt-2'>{error}</span>
-                      {invalidResponse && <div className='p-3 mt-2 rounded-md bg-neutral-800 font-mono [overflow-wrap:anywhere]'>{invalidResponse}</div>}
+                      {invalidResponse && (<>
+                        <div className='mt-2 flex flex-col gap-1'>
+                          <span>{t('add.step2.invalid_response')}</span>
+                          <div className='p-3 rounded-md bg-neutral-800 font-mono [overflow-wrap:anywhere]'>{invalidResponse}</div>
+                        </div>
+                      </>)}
                       <Button 
                         type='button'
                         className='mt-4 font-bold' 
