@@ -1,6 +1,6 @@
 import { Link } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
-import TelegramLogo from '@/../assets/telegram.svg'
+import TelegramLogo from '../../assets/telegram.svg'
 
 export const handle = { i18n: 'footer' }
 

@@ -19,7 +19,9 @@ import { Toaster } from 'sonner'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const locale = await i18next.getLocale(request)
-  return json({ locale })
+  return json({ locale }, {
+    headers: { 'Set-Cookie': await i18nCookie.serialize(locale) }
+  })
 }
 
 export const handle = {
@@ -30,6 +32,7 @@ import fontsCss from '../assets/fonts/fonts.css'
 import globalCss from './shared/styles/global.css'
 import tailwindCss from './shared/styles/tailwind.css'
 import sonnerCss from './shared/styles/sonner.css'
+import { i18nCookie } from '@/cookie'
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
@@ -40,12 +43,12 @@ export const links: LinksFunction = () => [
 ]
 
 export default function App() {
-  const { locale } = useLoaderData<typeof loader>()
   const { i18n } = useTranslation()
+  const { locale } = useLoaderData<typeof loader>()
   useChangeLanguage(locale)
   
   return (
-    <html lang={locale} dir={i18n.dir()}>
+    <html lang={i18n.resolvedLanguage} dir={i18n.dir()}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
