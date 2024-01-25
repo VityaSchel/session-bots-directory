@@ -1,13 +1,8 @@
-import { addAccount, addSession, deleteAccount, getAccount, resolveSession } from '@/server/auth'
+import { getAccount, resolveSession } from '@/server/auth'
 import { LoaderFunctionArgs, json } from '@remix-run/node'
 import * as Yup from 'yup'
 import cookie from 'cookie'
-import { nanoid } from 'nanoid'
-import { hash } from '@/server/hash'
-import { addBot, deleteBots, getBot, getBots, updateBot } from '@/server/bots'
-import { getDb } from '@/db'
-import { startVerification, verifyBot } from '@/server/verification'
-import { isSafe } from '@/server/moderation'
+import { deleteBots, getBot, updateBot } from '@/server/bots'
 
 export async function loader({
   params,

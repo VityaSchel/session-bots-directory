@@ -56,6 +56,7 @@ export default function AddNewBotStartPage() {
   const [stage, setStage] = React.useState<'initial' | 'verification'>('initial')
   const [verificationData, setVerificationData] = React.useState({ input: '', output: '' })
   const [captchaVisible, setCaptchaVisible] = React.useState(false)
+  const [invalidResponse, setInvalidResponse] = React.useState('')
 
   const onClose = () => {
     navigate('/manage')
@@ -104,6 +105,7 @@ export default function AddNewBotStartPage() {
             validateOnMount
             onSubmit={async (values) => {
               setError('')
+              setInvalidResponse('')
               try {
                 if(stage === 'initial') {
                   const request = await fetch('/api/bots/verification', {
@@ -140,9 +142,25 @@ export default function AddNewBotStartPage() {
                     })
                   })
                   if (request.status === 200) {
-                    const response = await request.json() as { ok: false, error: string } | { ok: true }
+                    const response = await request.json() as { ok: false, error: string } 
+                      | { ok: false, error: 'INVALID_VERIFICATION', output: string }
+                      | { ok: true }
                     if (!response.ok) {
-                      setError(response.error)
+                      switch(response.error) {
+                        case 'INVALID_VERIFICATION':
+                          setError(t('form_errors.invalid_verification'))
+                          break
+                        case 'INTERNAL_SERVER_ERROR':
+                          setError(t('form_errors.unknown_error'))
+                          break
+                        default:
+                          setError(response.error)
+                          break
+                      }
+                      
+                      if ('output' in response/*response.error === 'INVALID_VERIFICATION'*/) {
+                        setInvalidResponse(response.output)
+                      }
                     } else {
                       navigate('/manage')
                       onClose()
@@ -256,6 +274,7 @@ export default function AddNewBotStartPage() {
                       <div className='font-mono [overflow-wrap:anywhere] p-3 rounded-md bg-neutral-800'>{verificationData.output}</div>
                       <DialogDescription>{t('add.step2.text3')}</DialogDescription>
                       <span className='text-red-600 font-bold text-sm mt-2'>{error}</span>
+                      {invalidResponse && <div className='p-3 mt-2 rounded-md bg-neutral-800 font-mono [overflow-wrap:anywhere]'>{invalidResponse}</div>}
                       <Button 
                         type='button'
                         className='mt-4 font-bold' 

@@ -6,7 +6,6 @@ import { nanoid } from 'nanoid'
 import { hash } from '@/server/hash'
 import { addBot, deleteBots, getBot, getBots } from '@/server/bots'
 import { getDb } from '@/db'
-import { startVerification, verifyBot } from '@/server/verification'
 import { isSafe } from '@/server/moderation'
 
 export async function loader({

@@ -14,17 +14,16 @@ export async function startVerification(botSessionId: string, userId: number) {
   return { verificationInput, verificationOutput }
 }
 
-export async function verifyBot(botSessionId: string, userId: number) {
+export async function verifyBot(botSessionId: string): Promise<{ isVerified: true } | { isVerified: false, output: string }> {
   const verifications = await getDb('verifications')
   let verificationDb: string
   try {
-    if (!botSessionId) return null
     verificationDb = await verifications.get(botSessionId)
   } catch (error) {
     if (error instanceof Error) {
       if ('code' in error) {
         if (error.code === 'LEVEL_NOT_FOUND') {
-          return null
+          throw new Error('Verification could not be found')
         }
       }
     }
@@ -33,11 +32,30 @@ export async function verifyBot(botSessionId: string, userId: number) {
 
   const verification = JSON.parse(verificationDb) as { userId: number, verificationInput: string, verificationOutput: string }
 
-  await new Promise(resolve => setTimeout(resolve, 2000))
+  const verificationRequest = await fetch(process.env.BACKEND_URL + '/assert', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      input: verification.verificationInput,
+      output: verification.verificationOutput,
+      sessionID: botSessionId
+    })
+  })
+  const verificationResponse = await verificationRequest.json() as { ok: false } 
+    | { ok: true, equals: true } 
+    | { ok: true, equals: false, outputs: string[] }
 
-  if(true) {
-    await verifications.del(botSessionId)
-    return true 
+  if (verificationResponse.ok) {
+    if (verificationResponse.equals) {
+      await verifications.del(botSessionId)
+      return { isVerified: true }
+    } else {
+      return { isVerified: false, output: verificationResponse.outputs[0] }
+    }
+  } else {
+    throw new Error('Could not verify bot' + JSON.stringify(verificationResponse))
   }
 }
 

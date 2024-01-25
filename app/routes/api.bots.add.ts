@@ -1,11 +1,8 @@
-import { addAccount, addSession, getAccount, resolveSession } from '@/server/auth'
+import { getAccount, resolveSession } from '@/server/auth'
 import { LoaderFunctionArgs, json } from '@remix-run/node'
 import * as Yup from 'yup'
 import cookie from 'cookie'
-import { nanoid } from 'nanoid'
-import { hash } from '@/server/hash'
-import { addBot, getBot, getBots } from '@/server/bots'
-import { getDb } from '@/db'
+import { addBot } from '@/server/bots'
 import { verifyBot, getVerification } from '@/server/verification'
 import { verifyCaptcha } from '@/server/captcha'
 
@@ -57,9 +54,13 @@ export async function action({ request }: LoaderFunctionArgs) {
     return json({ ok: false, error: 'REQUEST_VERIFICATION_FIRST' })
   }
 
-  const isVerified = await verifyBot(body.sessionID, account.id)
-  if(!isVerified) {
-    return json({ ok: false, error: 'INVALID_VERIFICATION' })
+  try {
+    const verificationResponse = await verifyBot(body.sessionID)
+    if (!verificationResponse.isVerified) {
+      return json({ ok: false, error: 'INVALID_VERIFICATION', output: verificationResponse.output })
+    }
+  } catch(e) {
+    return json({ ok: false, error: 'INTERNAL_SERVER_ERROR' })
   }
 
   await addBot({
