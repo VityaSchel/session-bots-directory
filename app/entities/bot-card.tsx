@@ -1,6 +1,5 @@
 import React from 'react'
 import { Bot } from '@/shared/model/bot'
-import { Button } from '@/shared/shadcn/ui/button'
 import {
   Card,
   CardContent,
@@ -9,14 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/shared/shadcn/ui/card'
-import { MdOutlineContentCopy, MdOutlineDone } from 'react-icons/md'
-import copy from 'copy-to-clipboard'
 import { useTranslation } from 'react-i18next'
 import { useLocale } from 'remix-i18next'
 import { ReportBot } from '@/features/report-bot'
 import { Skeleton } from '@/shared/shadcn/ui/skeleton'
 import { BotFullDescription } from '@/entities/bot-full-description'
 import { OnlineOfflineIndicator } from '@/entities/online-offline-indicator'
+import { CopyButton } from '@/shared/ui/copy-button'
 
 export const handle = { i18n: 'search' }
 
@@ -24,7 +22,6 @@ export function BotCard({ bot }: {
   bot: Bot
 }) {
   const { t } = useTranslation('search')
-  const [copied, setCopied] = React.useState(false)
   const locale = useLocale()
   const [reported, setReported] = React.useState(false)
   const [openFullDescription, setOpenFullDescription] = React.useState(false)
@@ -38,7 +35,7 @@ export function BotCard({ bot }: {
     })
   }
 
-  const handleCopy = async () => {
+  const onCopy = async () => {
     const lastCopied = window.localStorage.getItem('lastCopied' + bot.id)
     if(lastCopied === null) {
       incrementViews()
@@ -49,8 +46,6 @@ export function BotCard({ bot }: {
         }
       }
     }
-    copy(bot.id)
-    setCopied(true)
   }
 
   if (reported) {
@@ -102,14 +97,12 @@ export function BotCard({ bot }: {
         }).format(bot.createdAt)}</b>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant='outline' onMouseDown={handleCopy} onMouseOut={() => setCopied(false)}>
-          <span className='mr-2'>
-            {copied 
-              ? <MdOutlineDone />
-              : <MdOutlineContentCopy />}
-          </span>
+        <CopyButton
+          content={bot.id}
+          onCopied={onCopy}
+        >
           {bot.id.slice(0, 4) + '...' + bot.id.slice(-4)}
-        </Button>
+        </CopyButton>
         <ReportBot 
           bot={bot} 
           onReported={() => setReported(true)} 
