@@ -10,7 +10,7 @@ type DB = {
   put: typeof redisClient.set,
   del: (...keys: RedisKey[]) => ReturnType<typeof redisClient.del>,
   keys: () => ReturnType<typeof redisClient.keys>,
-  mget: typeof redisClient.mget,
+  mget: (keys: RedisKey[]) => ReturnType<typeof redisClient.mget>,
 }
 
 const dbNames = ['accounts', 'sessions', 'bots', 'verifications'] as const
@@ -23,7 +23,7 @@ export function getDb(dbName: typeof dbNames[number]): DB {
     put: (key, value) => redisClient.set(`${dbName}:${key}`, value),
     del: (...keys: RedisKey[]) => redisClient.del(keys.map(key => `${dbName}:${key}`)),
     keys: () => redisClient.keys(`${dbName}:*`),
-    mget: (...keys) => redisClient.mget(keys.map(key => `${dbName}:${key}`)),
+    mget: async (keys: RedisKey[]) => keys.length ? await redisClient.mget(...keys.map(key => `${dbName}:${key}`)) : []
   }
 }
 
