@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Link, Outlet, useLoaderData, useNavigate, useRevalidator } from '@remix-run/react'
 import { toast } from 'sonner'
 import { Textarea } from '@/shared/shadcn/ui/textarea'
+import { BotFullDescription } from '@/entities/bot-full-description'
 
 export const handle = { i18n: 'dashboard' }
 
@@ -124,6 +125,7 @@ function BotCard({ bot }: {
   const revalidator = useRevalidator()
   const [isAddingDescription, setIsAddingDescription] = React.useState(false)
   const [freshlyAddedDescriptionValue, setFreshlyAddedDescriptionValue] = React.useState('')
+  const [openFullDescription, setOpenFullDescription] = React.useState(false)
 
   const handleDeleteBot = async () => {
     const request = await fetch('/api/bots/update', {
@@ -150,6 +152,7 @@ function BotCard({ bot }: {
   }
 
   const handleFinishAddingDescription = async () => {
+    if(freshlyAddedDescriptionValue === (bot.description ?? '')) return
     setIsAddingDescription(false)
     const request = await fetch('/api/bots/update', {
       method: 'POST',
@@ -174,24 +177,43 @@ function BotCard({ bot }: {
   return (
     <Card className="w-full max-w-full flex flex-col h-[380px]">
       <CardHeader>
-        <CardTitle>{bot.name}</CardTitle>
+        <CardTitle className='[overflow-wrap:anywhere]'>{bot.name}</CardTitle>
         <CardDescription className='[overflow-wrap:anywhere]'>SessionID: <b>{bot.id}</b></CardDescription>
       </CardHeader>
-      <CardContent className='font-[montserrat] text-muted-foreground flex-1 [overflow-wrap:anywhere] whitespace-pre-wrap [display: -webkit-box] overflow-hidden text-ellipsis line-clamp-[10]'>
+      <CardContent className='font-[montserrat] text-muted-foreground flex-1 [overflow-wrap:anywhere] whitespace-pre-wrap [display: -webkit-box] overflow-hidden text-ellipsis line-clamp-[10] relative'>
         {isAddingDescription ? (
           <Textarea 
             value={freshlyAddedDescriptionValue} 
             onChange={e => setFreshlyAddedDescriptionValue(e.target.value)}
             onBlur={handleFinishAddingDescription}
             placeholder={t('add.fields.description')}
-            className='h-full resize-none'
+            className='resize-none mt-[1px]'
+            style={{ height: 'calc(100% - 16px)' }}
             maxLength={200}
           />
         ) : (
-          bot.description || <Button variant='ghost' className='font-bold' onClick={handleStartAddingDescription}>
+          bot.description ? (
+            <>
+              <button 
+                className='font-[inherit] bg-transparent block w-full h-full overflow-hidden text-left'
+                onClick={() => setOpenFullDescription(true)}
+              >
+                {bot.description}
+              </button> 
+              <BotFullDescription
+                description={bot.description}
+                visible={openFullDescription}
+                onClose={() => setOpenFullDescription(false)} 
+              />
+            </>
+          ) : <Button variant='ghost' className='font-bold' onClick={handleStartAddingDescription}>
             {t('bots.add_description')}
           </Button>
         )}
+        <div
+          className='absolute bottom-6 h-8 bg-gradient-to-b from-transparent to-card pointer-events-none'
+          style={{ width: 'calc(100% - 3rem)' }}
+        />
       </CardContent>
       <CardFooter className="flex justify-between">
         <Select

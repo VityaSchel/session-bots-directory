@@ -53,8 +53,7 @@ export async function action({ request }: LoaderFunctionArgs) {
 
     if(body.description !== undefined) {
       const description = body.description.trim()
-      if (description !== '')
-        await updateBot(body.botId, 'description', description || undefined)
+      await updateBot(body.botId, 'description', description || undefined)
     }
 
     if (body.name !== undefined) {

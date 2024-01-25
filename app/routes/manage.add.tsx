@@ -285,7 +285,7 @@ export default function AddNewBotStartPage() {
                         className='mt-4 font-bold' 
                         disabled={isSubmitting}
                         onClick={() => setCaptchaVisible(true)}
-                      >{t('add.step2.submit')}</Button>
+                        >{isSubmitting ? t('add.step2.is_loading') : t('add.step2.submit')}</Button>
                       <CaptchaDialog
                         visible={captchaVisible}
                         onCancel={() => setCaptchaVisible(false)}

@@ -46,7 +46,8 @@
       "text2": "it should reply with this",
       "text3": "in under 1 second",
       "submit": "Done, submit for check",
-      "invalid_response": "This is response from the bot we've got:"
+      "invalid_response": "This is response from the bot we've got:",
+      "is_loading": "Testing your bot..."
     }
   },
   "not_authorized": "You are not authorized to view this page",

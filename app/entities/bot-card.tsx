@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocale } from 'remix-i18next'
 import { ReportBot } from '@/features/report-bot'
 import { Skeleton } from '@/shared/shadcn/ui/skeleton'
+import { BotFullDescription } from '@/entities/bot-full-description'
 
 export const handle = { i18n: 'search' }
 
@@ -25,6 +26,7 @@ export function BotCard({ bot }: {
   const [copied, setCopied] = React.useState(false)
   const locale = useLocale()
   const [reported, setReported] = React.useState(false)
+  const [openFullDescription, setOpenFullDescription] = React.useState(false)
 
   const handleCopy = () => {
     copy(bot.id)
@@ -48,6 +50,13 @@ export function BotCard({ bot }: {
         <span>{t('author')}: <b>{bot.author}</b></span>
         <CardDescription className='font-[montserrat] flex-1 break-words whitespace-pre-wrap [display: -webkit-box] overflow-hidden text-ellipsis line-clamp-[10]'>
           {bot.description || <span className='text-neutral-700'>{t('no_description')}</span>}
+          {bot.description && (
+            <BotFullDescription
+              description={bot.description}
+              visible={openFullDescription}
+              onClose={() => setOpenFullDescription(false)}
+            />
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent className='text-sm text-muted-foreground font-[montserrat]'>
