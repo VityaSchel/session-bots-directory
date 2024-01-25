@@ -57,6 +57,9 @@ export default function App() {
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
+        <meta rel="description" content="Session bots directory website is a place to discover new bots created by Session developers community" />
+        <meta property="og:site_name" content="Session Bots directory" />
+        <meta property="og:description" content="Session bots directory website is a place to discover new bots created by Session developers community" />
         <Meta />
         <Links />
       </head>

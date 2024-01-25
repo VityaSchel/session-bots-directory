@@ -1,24 +1,17 @@
 import React from 'react'
 import { LoaderFunctionArgs, MetaFunction, json } from '@remix-run/node'
 import { useTranslation } from 'react-i18next'
-// import { getBots } from '@/server/bots'
 import { Button } from '@/shared/shadcn/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogDescription, DialogHeader,
+  DialogTitle
 } from '@/shared/shadcn/ui/dialog'
-import { Outlet, useLoaderData, useNavigate, useNavigation, useSearchParams } from '@remix-run/react'
+import { Outlet, useLoaderData, useNavigate } from '@remix-run/react'
 import { Input } from '@/shared/shadcn/ui/input'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-import { Textarea } from '@/shared/shadcn/ui/textarea'
-import { Checkbox } from '@/shared/shadcn/ui/checkbox'
-import cx from 'classnames'
 import { getAccount, resolveSession } from '@/server/auth'
 import Cookie from 'cookie'
 
@@ -28,6 +21,7 @@ export const meta: MetaFunction = () => {
   return [
     { title: 'Dashboard — Session Bots Directory' },
     { name: 'description', content: 'Session bots directory website is a place to discover new bots created by Session developers community' },
+    { property: 'og:titoe', content: 'Dashboard' }
   ]
 }
 

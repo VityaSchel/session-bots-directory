@@ -28,6 +28,9 @@ const config = {
         'xl20': '1300px',
         '1400': '1400px'
       },
+      dropShadow: {
+        'footer-logo': '0 0 0.25rem #00f782',
+      },
       colors: {
         brand: '#00f782',
         border: 'hsl(var(--border))',

@@ -15,6 +15,7 @@ export const meta: MetaFunction = () => {
   return [
     { title: 'Session Bots Directory' },
     { name: 'description', content: 'Session bots directory website is a place to discover new bots created by Session developers community' },
+    { property: 'og:titoe', content: 'Main page' }
   ]
 }
 
