@@ -8,6 +8,7 @@ import { LoaderFunctionArgs, MetaFunction, json } from '@remix-run/node'
 import { Form, useLoaderData, useNavigation, useSubmit } from '@remix-run/react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { getAccount } from '@/server/auth'
 
 export const handle = { i18n: 'search' }
 
@@ -23,13 +24,24 @@ export const loader = async ({
   request,
 }: LoaderFunctionArgs) => {
   const url = new URL(request.url)
-  const q = url.searchParams.get('q')
+const q = url.searchParams.get('q')
   const sort = url.searchParams.get('sort')
   const bots = await searchBots({
     query: q,
     sort: sort
   })
-  return json({ bots, q, sort })
+
+  const botsTransformed = await Promise.all(
+    bots.map(async bot => {
+      const account = await getAccount(bot.author)
+      return {
+        ...bot,
+        author: account?.displayName ?? bot.author
+      }
+    })
+  )
+
+  return json({ bots: botsTransformed, q, sort })
 }
 
 export default function SearchPage() {

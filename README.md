@@ -2,6 +2,8 @@
 
 Session bots directory website is a place to discover new bots created by Session developers community. Visit the website: <https://sessionbots.directory>
 
+[![Screenshot](https://github.com/VityaSchel/session-bots-directory/assets/59040542/a798cd77-27ca-4d45-8bd5-ce9cb064a59d)](https://sessionbots.directory)
+
 It's free for everyone, does not require any personal info to sign up and simple to use.
 
 ## Get started
