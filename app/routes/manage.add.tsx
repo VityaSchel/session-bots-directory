@@ -1,7 +1,6 @@
 import React from 'react'
-import { LoaderFunctionArgs, MetaFunction, json } from '@remix-run/node'
+import { MetaFunction } from '@remix-run/node'
 import { useTranslation } from 'react-i18next'
-// import { getBots } from '@/server/bots'
 import { Button } from '@/shared/shadcn/ui/button'
 import {
   Dialog,
@@ -9,10 +8,9 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from '@/shared/shadcn/ui/dialog'
-import { Outlet, useNavigate, useNavigation, useSearchParams } from '@remix-run/react'
+import { Outlet, useNavigate, useSearchParams } from '@remix-run/react'
 import { Input } from '@/shared/shadcn/ui/input'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
@@ -28,24 +26,6 @@ export const meta: MetaFunction = () => {
     { title: 'Dashboard — Session Bots Directory' },
     { name: 'description', content: 'Session bots directory website is a place to discover new bots created by Session developers community' },
   ]
-}
-
-export const loader = async ({
-  request,
-}: LoaderFunctionArgs) => {
-  // const cookies = Cookie.parse(request.headers.get('Cookie') || '')
-  // const sessionToken = cookies['sessionbots.directory_token']
-  // const username = await resolveSession(sessionToken)
-  // if (!username) {
-  //   return json({ ok: false, error: 'NOT_AUTHORIZED' })
-  // }
-
-  // const account = await getAccount(username)
-  // if (!account) return json({ ok: false, error: 'NO_ACCOUNT' })
-  // const botsIds = account?.bots
-  // const bots = await getBots(botsIds)
-
-  return json({ bots: [] })
 }
 
 export default function AddNewBotStartPage() {

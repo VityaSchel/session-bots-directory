@@ -202,7 +202,7 @@ function BotCard({ bot }: {
           bot.description ? (
             <>
               <button 
-                className='font-[inherit] bg-transparent block w-full h-full overflow-hidden text-left'
+                className='font-[inherit] bg-transparent w-full h-full overflow-hidden text-left flex'
                 onClick={() => setOpenFullDescription(true)}
               >
                 {bot.description}

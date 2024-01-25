@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
+import type { LinksFunction, MetaFunction } from '@remix-run/node'
 import { useTranslation } from 'react-i18next'
 import { OnlineBots } from '@/features/online-bots'
 import { Link, json, useLoaderData } from '@remix-run/react'
@@ -9,8 +9,7 @@ import { CTAForm } from '@/features/cta-form'
 import cx from 'classnames'
 import revealEffects from '@/shared/styles/reveal-effects.css'
 import { HiOutlineChevronRight } from 'react-icons/hi2'
-import cookie from 'cookie'
-import { bots } from '@/server/bots'
+import { getAllBots } from '@/server/bots'
 
 export const meta: MetaFunction = () => {
   return [
@@ -23,9 +22,8 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: revealEffects },
 ]
 
-export const loader = async ({
-  request,
-}: LoaderFunctionArgs) => {
+export const loader = async () => {
+  const bots = await getAllBots()
   const onlineBots = bots.filter(bot => bot.status === 'online').length
 
   return json({ ok: true, onlineBots })

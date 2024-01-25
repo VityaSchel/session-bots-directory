@@ -31,7 +31,7 @@ export function OnlineOfflineIndicator({ offlineFails, online, className }: {
             className={cx(
               'inline-block rounded-full w-2.5 h-2.5 align-middle ml-2',
               online ? 'bg-green-500' : 'bg-neutral-500',
-              online ? 'bg-green-500' : 'shadow-neutral-500',
+              online ? 'shadow-green-500' : 'shadow-neutral-500',
               className
             )} 
             style={{

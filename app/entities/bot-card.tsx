@@ -56,13 +56,20 @@ export function BotCard({ bot }: {
         </CardTitle>
         <span>{t('author')}: <b>{bot.author}</b></span>
         <CardDescription className='font-[montserrat] flex-1 break-words whitespace-pre-wrap [display: -webkit-box] overflow-hidden text-ellipsis line-clamp-[10]'>
-          {bot.description || <span className='text-neutral-700'>{t('no_description')}</span>}
-          {bot.description && (
+          {bot.description ? (<>
+            <button
+              className='font-[inherit] bg-transparent w-full h-full overflow-hidden text-left flex'
+              onClick={() => setOpenFullDescription(true)}
+            >
+              {bot.description}
+            </button>
             <BotFullDescription
               description={bot.description}
               visible={openFullDescription}
               onClose={() => setOpenFullDescription(false)}
             />
+          </>) : (
+            <span className='text-neutral-700'>{t('no_description')}</span>
           )}
         </CardDescription>
       </CardHeader>

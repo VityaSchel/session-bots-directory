@@ -1,23 +1,22 @@
 import { getDb } from '@/db'
-import { deleteBotFromAuthor, getAccount, pushNewBot } from '@/server/auth'
+import { deleteBotFromAuthor, pushNewBot } from '@/server/auth'
 import { Bot } from '@/shared/model/bot'
 
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-
-const __dirname = dirname(fileURLToPath(import.meta.url)) + '/'
-
 const botsDb = await getDb('bots')
-export let bots = Array.from(
-  await botsDb.mget(
-    await botsDb.keys()
-  )
-).map(value => JSON.parse(value as string) as Bot)
+
+export async function getAllBots(): Promise<Bot[]> {
+  return Array.from(
+    await botsDb.mget(
+      await botsDb.keys()
+    )
+  ).map(value => JSON.parse(value as string) as Bot)
+}
 
 export async function searchBots({ query, sort }: {
   query: string | null
   sort: string | null
 }): Promise<Bot[]> {
+  const bots = await getAllBots()
   let results = bots
     .filter(b => b.visible)
   if(query) {
@@ -52,22 +51,16 @@ export async function getBot(botId: string): Promise<Bot | null> {
 export async function addBot(bot: Bot) {
   const existingBot = await getBot(bot.id)
   if (existingBot) {
-    const index = bots.findIndex(b => b.id === bot.id)
-    if (index !== -1) {
-      bots.splice(index, 1)
-    }
     await deleteBotFromAuthor(bot.author, bot.id)
   }
   const botsDb = await getDb('bots')
   await botsDb.put(bot.id, JSON.stringify(bot))
-  bots.push(bot)
   pushNewBot(bot.author, bot.id)
 }
 
 export async function deleteBots(botsIds: string[]) {
   const botsDb = await getDb('bots')
   await botsDb.del(...botsIds)
-  bots = bots.filter(b => !botsIds.includes(b.id))
 }
 
 export async function updateBot<E extends keyof Bot>(botId: string, property: E, newValue: Bot[E]) {
@@ -79,6 +72,4 @@ export async function updateBot<E extends keyof Bot>(botId: string, property: E,
     bot[property] = newValue
   }
   await botsDb.put(botId, JSON.stringify(bot))
-  const index = bots.findIndex(b => b.id === botId)
-  bots[index] = bot
 }
