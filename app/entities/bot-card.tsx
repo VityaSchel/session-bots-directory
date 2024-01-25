@@ -121,6 +121,6 @@ export function BotCard({ bot }: {
 
 export function BotCardSkeleton() {
   return (
-    <Skeleton className="w-full h-[404px] rounded-xl" />
+    <Skeleton className="w-[305px] h-[404px] rounded-xl" />
   )
 }
