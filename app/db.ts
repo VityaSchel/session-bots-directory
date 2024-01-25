@@ -1,35 +1,32 @@
-import { Level } from 'level'
+import Redis, { RedisKey } from 'ioredis'
 
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-const __dirname = dirname(fileURLToPath(import.meta.url)) + '/'
+const redisClient = new Redis({
+  port: 6714,
+  host: '127.0.0.1'
+})
 
-const dbs = new Map<string, Level<string, string>>()
-const dbNames = ['accounts', 'sessions', 'bots', 'verifications'] as const
-
-export async function getDb(dbName: typeof dbNames[number]) {
-  if (!dbNames.includes(dbName)) throw new Error(`Invalid db name: ${dbName}`)
-
-  let db: Level<string, string>
-
-  if(dbs.has(dbName)) {
-    db = dbs.get(dbName)!
-  } else {
-    db = new Level(__dirname + `../db/${dbName}`, { valueEncoding: 'json' })
-    dbs.set(dbName, db)
-  }
-
-  if(db.status === 'opening')
-    await new Promise(resolve => db.once('ready', resolve))
-
-  return db
+type DB = {
+  get: typeof redisClient.get,
+  put: typeof redisClient.set,
+  del: (...keys: RedisKey[]) => ReturnType<typeof redisClient.del>,
+  keys: () => ReturnType<typeof redisClient.keys>,
+  mget: typeof redisClient.mget,
 }
 
-process.env.NODE_ENV === 'production' && process.on('sigint', async () => {
-  const levelDbs = dbs.values()
-  for (const db of levelDbs) {
-    if(db.status === 'open') {
-      await db.close()
-    }
+const dbNames = ['accounts', 'sessions', 'bots', 'verifications'] as const
+
+export function getDb(dbName: typeof dbNames[number]): DB {
+  if (!dbNames.includes(dbName)) throw new Error(`Invalid db name: ${dbName}`)
+
+  return {
+    get: (key) => redisClient.get(`${dbName}:${key}`),
+    put: (key, value) => redisClient.set(`${dbName}:${key}`, value),
+    del: (...keys: RedisKey[]) => redisClient.del(keys.map(key => `${dbName}:${key}`)),
+    keys: () => redisClient.keys(`${dbName}:*`),
+    mget: (...keys) => redisClient.mget(keys.map(key => `${dbName}:${key}`)),
   }
+}
+
+process.on('sigint', async () => {
+  await redisClient.disconnect()
 })

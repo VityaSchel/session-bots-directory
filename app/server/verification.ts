@@ -16,19 +16,8 @@ export async function startVerification(botSessionId: string, userId: number) {
 
 export async function verifyBot(botSessionId: string): Promise<{ isVerified: true } | { isVerified: false, output: string }> {
   const verifications = await getDb('verifications')
-  let verificationDb: string
-  try {
-    verificationDb = await verifications.get(botSessionId)
-  } catch (error) {
-    if (error instanceof Error) {
-      if ('code' in error) {
-        if (error.code === 'LEVEL_NOT_FOUND') {
-          throw new Error('Verification could not be found')
-        }
-      }
-    }
-    throw error
-  }
+  const verificationDb = await verifications.get(botSessionId)
+  if (!verificationDb) throw new Error('Verification could not be found')
 
   const verification = JSON.parse(verificationDb) as { userId: number, verificationInput: string, verificationOutput: string }
 
@@ -61,19 +50,8 @@ export async function verifyBot(botSessionId: string): Promise<{ isVerified: tru
 
 export async function getVerification(botSessionId: string) {
   const verifications = await getDb('verifications')
-  let verificationDb: string
-  try {
-    verificationDb = await verifications.get(botSessionId)
-  } catch (error) {
-    if (error instanceof Error) {
-      if ('code' in error) {
-        if (error.code === 'LEVEL_NOT_FOUND') {
-          return null
-        }
-      }
-    }
-    throw error
-  }
+  const verificationDb = await verifications.get(botSessionId)
+  if (!verificationDb) return null
 
   const verification = JSON.parse(verificationDb) as { userId: number, verificationInput: string, verificationOutput: string }
   return verification

@@ -8,8 +8,8 @@
     "dev": "remix dev --manual",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "dotenv -e .env.production remix-serve ./build/index.js",
-    "unlock-db": "find db/** -name LOCK -type f -delete",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "db": ""
   },
   "dependencies": {
     "@hcaptcha/react-hcaptcha": "^1.9.3",
@@ -37,9 +37,9 @@
     "i18next-fs-backend": "^2.3.1",
     "i18next-http-backend": "^2.4.2",
     "intl-parse-accept-language": "^1.0.0",
+    "ioredis": "^5.3.2",
     "isbot": "^4.1.0",
     "js-cookie": "^3.0.5",
-    "level": "^8.0.0",
     "nanoid": "^5.0.4",
     "plural-ru": "^2.0.2",
     "react": "^18.2.0",

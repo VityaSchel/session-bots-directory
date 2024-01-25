@@ -1,7 +1,6 @@
 import { getDb } from '@/db'
 import { deleteBotFromAuthor, getAccount, pushNewBot } from '@/server/auth'
 import { Bot } from '@/shared/model/bot'
-import { Level } from 'level'
 
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -9,7 +8,11 @@ import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url)) + '/'
 
 const botsDb = await getDb('bots')
-export let bots = Array.from(await botsDb.values().all()).map(bot => JSON.parse(bot) as Bot)
+export let bots = Array.from(
+  await botsDb.mget(
+    await botsDb.keys()
+  )
+).map(value => JSON.parse(value as string) as Bot)
 
 export async function searchBots({ query, sort }: {
   query: string | null
@@ -32,28 +35,18 @@ export async function searchBots({ query, sort }: {
 
 export async function getBots(botIds: string[]): Promise<Bot[]> {
   const botsDb = await getDb('bots')
-  const bots = await botsDb.getMany(botIds)
+  const bots = await botsDb.mget(botIds)
   return bots
     .filter(Boolean)
-    .map(bot => JSON.parse(bot) as Bot)
+    .map(bot => JSON.parse(bot as string) as Bot)
 }
 
 export async function getBot(botId: string): Promise<Bot | null> {
   const botsDb = await getDb('bots')
-  try {
-    if (!botId) return null
-    const existingBot = await botsDb.get(botId)
-    return JSON.parse(existingBot) as Bot
-  } catch (error) {
-    if (error instanceof Error) {
-      if ('code' in error) {
-        if (error.code === 'LEVEL_NOT_FOUND') {
-          return null
-        }
-      }
-    }
-    throw error
-  }
+  if (!botId) return null
+  const existingBot = await botsDb.get(botId)
+  if (!existingBot) return null
+  return JSON.parse(existingBot) as Bot
 }
 
 export async function addBot(bot: Bot) {
@@ -73,7 +66,7 @@ export async function addBot(bot: Bot) {
 
 export async function deleteBots(botsIds: string[]) {
   const botsDb = await getDb('bots')
-  await botsDb.batch(botsIds.map(id => ({ type: 'del', key: id })))
+  await botsDb.del(...botsIds)
   bots = bots.filter(b => !botsIds.includes(b.id))
 }
 

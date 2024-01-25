@@ -2,21 +2,11 @@ import { AccountSchema } from '@/shared/model/account'
 import { getDb } from '@/db'
 
 export async function getAccount(username: string): Promise<AccountSchema | null> {
-  try {
-    const accounts = await getDb('accounts')
-    if (!username) return null
-    const account = await accounts.get(username)
-    return JSON.parse(account) as AccountSchema
-  } catch (error) {
-    if(error instanceof Error) {
-      if('code' in error) {
-        if (error.code === 'LEVEL_NOT_FOUND') {
-          return null
-        }
-      }
-    }
-    throw error
-  }
+  const accounts = await getDb('accounts')
+  if (!username) return null
+  const account = await accounts.get(username)
+  if (!account) return null
+  return JSON.parse(account) as AccountSchema
 }
 
 export async function addAccount(account: AccountSchema): Promise<void> {
@@ -72,19 +62,8 @@ export async function deleteSession(token: string) {
 }
 
 export async function resolveSession(token: string) {
-  try {
-    const sessions = await getDb('sessions')
-    if (!token) return null
-    const username = await sessions.get(token)
-    return username
-  } catch (error) {
-    if(error instanceof Error) {
-      if('code' in error) {
-        if (error.code === 'LEVEL_NOT_FOUND') {
-          return null
-        }
-      }
-    }
-    throw error
-  }
+  const sessions = await getDb('sessions')
+  if (!token) return null
+  const username = await sessions.get(token)
+  return username
 }
