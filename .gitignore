@@ -8,3 +8,5 @@ public/build
 .DS_Store
 
 db
+
+redis
