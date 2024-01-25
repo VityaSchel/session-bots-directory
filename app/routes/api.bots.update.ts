@@ -64,6 +64,9 @@ export async function action({ request }: LoaderFunctionArgs) {
 
     if (body.visibility !== undefined) {
       await updateBot(body.botId, 'visible', body.visibility === 'public')
+      if (body.visibility === 'public') {
+        await updateBot(body.botId, 'status', 'online')
+      }
     }
 
     return json({ ok: true })
