@@ -14,7 +14,7 @@ export function Footer() {
         <div className='flex flex-col gap-2 flex-1'>
           <span>{t('disclaimer')}</span>
           <div className='flex flex-col 1060:flex-row gap-y-1 gap-x-2 1060:gap-x-5 flex-1 flex-wrap'>
-            <Link className='hover:drop-shadow-footer-logo w-fit' to='/'>
+            <Link className='hover:drop-shadow-footer-logo w-fit' to='https://t.me/session_nodejs'>
               <img src={TelegramLogo} alt='Telegram logo' width='24' />
             </Link>
             <Link className='hover:text-brand w-fit font-bold' to='https://github.com/vityaSchel/session-bots-directory/tree/main/GUIDELINES.md' target='_blank' rel='noreferrer'>
