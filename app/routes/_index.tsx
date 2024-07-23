@@ -61,7 +61,7 @@ export default function Homepage() {
         />
         <PageLink
           icon={<RiToolsLine />}
-          to='https://github.com/VityaSchel/session-nodejs-bot'
+          to='https://sessionjs.github.io/docs'
           title={t('links.byo.title', { ns: 'landing' })}
           description={t('links.byo.description', { ns: 'landing' })}
           className='reveal-up-3'

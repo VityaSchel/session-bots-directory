@@ -1,6 +1,6 @@
 # General guidelines for adding bots to sessionbots.directory
 
-While it's technically possible to create any bot you want with [session-nodejs-bot](https://github.com/VityaSchel/session-nodejs-bot) tool or any other library, and you will be responsible for any damages and content shared with it, sessionbots.directory does not allow any bots with dubious and illegal content.
+Bots published on website are accepted automatically and only author is responsible for any damages and content shared with it, sessionbots.directory does not allow any bots with dubious and illegal content.
 
 - [General guidelines for adding bots to sessionbots.directory](#general-guidelines-for-adding-bots-to-sessionbotsdirectory)
   - [1. No illegal content and hatespeech](#1-no-illegal-content-and-hatespeech)
