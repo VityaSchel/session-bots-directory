@@ -16,6 +16,7 @@ import { useChangeLanguage } from 'remix-i18next'
 import { useTranslation } from 'react-i18next'
 import i18next from './i18next.server'
 import { Toaster } from 'sonner'
+import { MigrationAlert } from '@/widgets/migration-alert'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const locale = await i18next.getLocale(request)
