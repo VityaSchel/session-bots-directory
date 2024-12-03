@@ -1,8 +1,8 @@
-# General guidelines for adding bots to sessionbots.directory
+# General guidelines for adding bots to bots.session.community
 
-Bots published on website are accepted automatically and only author is responsible for any damages and content shared with it, sessionbots.directory does not allow any bots with dubious and illegal content.
+Bots published on website are accepted automatically and only author is responsible for any damages and content shared with it, bots.session.community does not allow any bots with dubious and illegal content.
 
-- [General guidelines for adding bots to sessionbots.directory](#general-guidelines-for-adding-bots-to-sessionbotsdirectory)
+- [General guidelines for adding bots to bots.session.community](#general-guidelines-for-adding-bots-to-botssessioncommunity)
   - [1. No illegal content and hatespeech](#1-no-illegal-content-and-hatespeech)
   - [2. All bots must be public](#2-all-bots-must-be-public)
   - [3. All bots must be online 100% of time](#3-all-bots-must-be-online-100-of-time)

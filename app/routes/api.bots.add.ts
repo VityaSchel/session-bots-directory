@@ -39,7 +39,7 @@ export async function action({ request }: LoaderFunctionArgs) {
   }
 
   const cookies = cookie.parse(request.headers.get('Cookie') || '')
-  const sessionToken = cookies['sessionbots.directory_token']
+  const sessionToken = cookies['sessionbotsdirectory_token']
   const username = sessionToken && await resolveSession(sessionToken)
   if (!username) {
     return json({ ok: false }, { status: 401 })

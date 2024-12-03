@@ -74,8 +74,8 @@ export async function action({ request }: LoaderFunctionArgs) {
   const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
 
   const headers = new Headers()
-  headers.append('Set-Cookie', cookie.serialize('sessionbots.directory_token', sessionToken, { httpOnly: true, expires, path: '/' }))
-  headers.append('Set-Cookie', cookie.serialize('sessionbots.directory_authorized', body.displayName ?? body.username, { httpOnly: false, expires, path: '/' }))
+  headers.append('Set-Cookie', cookie.serialize('sessionbotsdirectory_token', sessionToken, { httpOnly: true, expires, path: '/' }))
+  headers.append('Set-Cookie', cookie.serialize('sessionbotsdirectory_authorized', body.displayName ?? body.username, { httpOnly: false, expires, path: '/' }))
 
   return json({ ok: true }, { headers })
 }

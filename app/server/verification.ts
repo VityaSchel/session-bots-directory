@@ -4,7 +4,7 @@ import crypto from 'crypto'
 
 export async function startVerification(botSessionId: string, userId: number) {
   const verifications = await getDb('verifications')
-  const verificationInput = `/sessionbots.directory_verification ${nanoid()}`
+  const verificationInput = `/sessionbotsdirectory_verification ${nanoid()}`
   const verificationOutput = crypto.createHash('sha256').update(userId.toString()).digest('hex')
   await verifications.put(botSessionId, JSON.stringify({ 
     userId,

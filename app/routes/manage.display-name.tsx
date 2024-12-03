@@ -29,7 +29,7 @@ export const loader = async ({
   request,
 }: LoaderFunctionArgs) => {
   const cookies = Cookie.parse(request.headers.get('Cookie') || '')
-  const sessionToken = cookies['sessionbots.directory_token']
+  const sessionToken = cookies['sessionbotsdirectory_token']
   if (!sessionToken) {
     return json({ displayName: '' })
   }
