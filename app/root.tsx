@@ -72,6 +72,7 @@ export default function App() {
           <Toaster richColors visibleToasts={1} />
           <Outlet />
         </main>
+        <MigrationAlert />
         <Footer />
         <ScrollRestoration />
         <Scripts />
