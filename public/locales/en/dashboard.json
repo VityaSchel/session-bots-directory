@@ -57,7 +57,8 @@
     "displayName_too_long": "Displayed name is too long",
     "password_too_long": "Password is too long",
     "display_name_not_safe": "Choose another displayed name",
-    "invalid_verification": "Invalid verification response"
+    "invalid_verification": "Invalid verification response",
+    "bot_not_safe": "Looks like your bot may violate our site's rules. Do not try to submit bots that sell or promote illegal activities"
   },
   "settings": {
     "display_name": {

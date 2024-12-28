@@ -5,6 +5,7 @@ import cookie from 'cookie'
 import { addBot } from '@/server/bots'
 import { verifyBot, getVerification } from '@/server/verification'
 import { verifyCaptcha } from '@/server/captcha'
+import { isSafe } from '@/server/moderation'
 
 export async function loader({
   params,
@@ -61,6 +62,13 @@ export async function action({ request }: LoaderFunctionArgs) {
     }
   } catch(e) {
     return json({ ok: false, error: 'INTERNAL_SERVER_ERROR' })
+  }
+
+  if(!await isSafe(body.name)) {
+    return json({ ok: false, error: 'BOT_NOT_SAFE' })
+  }
+  if (body.description && !await isSafe(body.description)) {
+    return json({ ok: false, error: 'BOT_NOT_SAFE' })
   }
 
   await addBot({

@@ -172,7 +172,11 @@ function BotCard({ bot }: {
       navigate('/manage', { replace: true })
       revalidator.revalidate()
     } else {
-      toast.error(t('bots.update_error'))
+      if(response.error === 'BOT_NOT_SAFE') {
+        toast.error(t('form_errors.bot_not_safe'))
+      } else {
+        toast.error(t('bots.update_error'))
+      }
     }
   }
 
@@ -239,7 +243,11 @@ function BotCard({ bot }: {
             })
             const response = await request.json() as { ok: true } | { ok: false, error: string }
             if(!response.ok) {
-              toast.error(t('bots.update_error'))
+              if(response.error === 'BOT_NOT_SAFE') {
+                toast.error(t('form_errors.bot_not_safe'))
+              } else {
+                toast.error(t('bots.update_error'))
+              }
             } else {
               toast.success(t('bots.update_success'))
               navigate('/manage', { replace: true })

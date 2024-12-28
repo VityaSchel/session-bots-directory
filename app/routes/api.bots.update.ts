@@ -3,6 +3,7 @@ import { LoaderFunctionArgs, json } from '@remix-run/node'
 import * as Yup from 'yup'
 import cookie from 'cookie'
 import { deleteBots, getBot, updateBot } from '@/server/bots'
+import { isSafe } from '@/server/moderation'
 
 export async function loader({
   params,
@@ -49,6 +50,14 @@ export async function action({ request }: LoaderFunctionArgs) {
 
     if (bot.author !== username) {
       return json({ ok: false }, { status: 403 })
+    }
+
+    if (body.name !== undefined && !await isSafe(body.name)) {
+      return json({ ok: false, error: 'BOT_NOT_SAFE' })
+    }
+
+    if (body.description !== undefined && !await isSafe(body.description)) {
+      return json({ ok: false, error: 'BOT_NOT_SAFE' })
     }
 
     if(body.description !== undefined) {

@@ -101,8 +101,8 @@ export default function EditBotPage() {
                 if (request.status === 200) {
                   const response = await request.json() as { ok: false, error: string } | { ok: true }
                   if (!response.ok) {
-                    if (response.error === 'DISPLAY_NAME_NOT_SAFE') {
-                      setError(t('form_errors.display_name_not_safe'))
+                    if (response.error === 'BOT_NOT_SAFE') {
+                      setError(t('form_errors.bot_not_safe'))
                     } else {
                       setError(response.error)
                     }

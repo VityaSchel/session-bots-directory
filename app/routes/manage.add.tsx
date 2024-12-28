@@ -131,6 +131,9 @@ export default function AddNewBotStartPage() {
                         case 'INVALID_VERIFICATION':
                           setError(t('form_errors.invalid_verification'))
                           break
+                        case 'BOT_NOT_SAFE':
+                          setError(t('form_errors.bot_not_safe'))
+                          break
                         case 'INTERNAL_SERVER_ERROR':
                           setError(t('form_errors.unknown_error'))
                           break
