@@ -40,7 +40,17 @@ export async function action({ request }: LoaderFunctionArgs) {
       body: JSON.stringify({
         chat_id: process.env.TELEGRAM_CHAT_ID,
         text: `Report to <b>${bot.name}</b> by <b>${bot.author}</b> <pre>${body.botId}</pre>`,
-        parse_mode: 'HTML'
+        parse_mode: 'HTML',
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: '🚫❌😡 BAN 🔪💀🪦',
+                url: 'https://bots.session.community/api/bots/ban?botId=' + bot.id
+              }
+            ]
+          ]
+        }
       })
     })
 
