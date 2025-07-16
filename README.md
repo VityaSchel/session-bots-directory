@@ -1,10 +1,7 @@
 # [Session bots directory](https://bots.session.community)
 
-Session bots directory website is a place to discover new bots created by Session developers community. Visit the website: <https://bots.session.community>
-
-> [!IMPORTANT]  
-> We have migrated from sessionbots.directory to **bots.session.community** \
-> The old domain will stop serving content on January 22nd 2025
+> [!NOTE]
+> This project is archived because I no longer contribute to Session. You might want to check out the general Session Directory website: [session.directory](https://session.directory/)
 
 [![Screenshot](https://github.com/VityaSchel/session-bots-directory/assets/59040542/a798cd77-27ca-4d45-8bd5-ce9cb064a59d)](https://bots.session.community)
 
